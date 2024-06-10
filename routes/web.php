@@ -451,4 +451,4 @@ Route::middleware(['auth'])->group(function () {
     Route::put('suppliers/{id}', [SuppliersController::class, 'update'])->name('suppliers.update');
     Route::delete('/suppliers/{id}/delete', [SuppliersController::class, 'delete'])->name('suppliers.destroy');
 });
-
+   

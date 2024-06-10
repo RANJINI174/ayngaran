@@ -1,5 +1,5 @@
 <?php
-
+if (!function_exists('toCurrency')) {
 function toCurrency($value, $currency, $fractionDigits = 0)
 {
     $acceptedCurencies = ["INR" => "en_US", "VND" => "vi_VN"];
@@ -16,7 +16,8 @@ function toCurrency($value, $currency, $fractionDigits = 0)
 
      return $formattedNumber;
 }
-
+}
+if (!function_exists('IND_money_format')) {
  function IND_money_format($money){
 
             $decimal = (string)($money - floor($money));
@@ -38,8 +39,8 @@ function toCurrency($value, $currency, $fractionDigits = 0)
             // }
             return $result;
         }
-
-
+    }
+    if (!function_exists('rupee_format')) {
 function rupee_format($num) {
         $explrestunits = "" ;
         if(strlen($num)>3){
@@ -61,4 +62,5 @@ function rupee_format($num) {
             $thecash = $num;
         }
         return $thecash; // writes the final format where $currency is the currency symbol.
+    }
     }

@@ -10,8 +10,8 @@ class SuppliersController extends Controller
     public function index()
     {
         try {
-            $supplier = Supplier::orderBy('id', 'asc')->get();
-
+            // $supplier = Supplier::orderBy('id', 'asc')->get();
+            $supplier = Supplier::all();
             return view('suppliers.index', compact('supplier'));
         } catch (\Exception $e) {
             return back()->with(['error' => $e->getMessage()])->withInput();

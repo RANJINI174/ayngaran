@@ -10,12 +10,13 @@
                         data-bs-dismiss="modal"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body">
-                    <form id="Add_supplierForm" autocomplete="off">
+                    <form id="Add_suppliersForm" autocomplete="off">
                         @csrf
                         @method('POST')
                         <div class="form-group">
-                            {{-- <input type="hidden"  id="supplierName" value=""> --}}
-                            <input type="hidden" name="url" id="url" value="{{ route('suppliers.store') }}">
+
+                            {{-- <input type="hidden"  id="supplierName" value="">  --}}
+                            <input type="hidden"  id="url" value="{{ route('suppliers.store') }}">
                             <input type="text" class="form-control" id="suppliername" name="suppliername"
                                 placeholder="SupplierName">
                             <div class="text-start text-danger suppliername"></div>
