@@ -30,10 +30,12 @@
                         $vehicles_check = $permission->checkPermission('vehicles.read');
                         $designation_check = $permission->checkPermission('designation.read');
                         $pages_check = $permission->checkPermission('pages.read');
-                    @endphp
+                        // $suppliers_check = $permission->checkPermission('suppliers.read');
+                        $suppliers_check = $permission->checkPermission('suppliers.read');
+                   @endphp
                   @if ($projecttype_check == 1 || $branch_check == 1 || $banks_check == 1 || $relationship_check == 1 || $directions_check == 1
                   || $marketingtypes_check == 1 || $printtemplatecontents_check == 1 || $mainledgers_check == 1 || $subledgers_check == 1 || $vehicles_check == 1 ||
-                   $designation_check == 1 || $pages_check == 1)
+                   $designation_check == 1 || $pages_check == 1 || $suppliers_check == 1)
             <li class="slide">
                 <a class="side-menu__item" data-bs-toggle="slide" href="#"><i
                         class="side-menu__icon fe fe-list"></i><span class="side-menu__label">Masters</span><i
@@ -101,10 +103,14 @@
                     <li><a href="{{ url('/vehicle') }}"
                             class="slide-item {{ Request::is('vehicle') ? 'active' : '' }}">Vehicle</a></li>
                     @endif
-                    @if ($vehicles_check == 1)
+
+              @if ($suppliers_check == 1)
                     <li><a href="{{ url('/suppliers') }}"
                             class="slide-item {{ Request::is('suppliers') ? 'active' : '' }}">Suppliers</a></li>
                     @endif
+
+
+
                 </ul>
             </li>
             @endif

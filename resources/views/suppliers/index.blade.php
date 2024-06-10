@@ -2,19 +2,20 @@
 @section('content')
 
     {{-- Add Branch --}}
-    <div class="modal fade" id="Add_pageModel">
+    <div class="modal fade" id="Add_suppliersModel">
         <div class="modal-dialog modal-dialog-centered text-center" role="document">
             <div class="modal-content modal-content-demo">
                 <div class="modal-header">
-                    <h6 class="modal-title">Add Page</h6><button aria-label="Close" class="btn-close"
+                    <h6 class="modal-title">Add Suppiers</h6><button aria-label="Close" class="btn-close"
                         data-bs-dismiss="modal"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body">
-                    <form id="Add_pageForm">
+                    <form id="Add_supplierForm" autocomplete="off">
                         @csrf
                         @method('POST')
                         <div class="form-group">
                             {{-- <input type="hidden"  id="supplierName" value=""> --}}
+                            <input type="hidden" name="url" id="url" value="{{ route('suppliers.store') }}">
                             <input type="text" class="form-control" id="suppliername" name="suppliername"
                                 placeholder="SupplierName">
                             <div class="text-start text-danger suppliername"></div>
@@ -22,7 +23,7 @@
                         <div class="form-group">
                             <input type="text" class="form-control" id="supplier_contact_name" name="supplier_contact_name"
                                 placeholder="Supplier Contact Name">
-                            <div class="text-start text-danger page_url"></div>
+                            <div class="text-start text-danger supplier_contact_name"></div>
                         </div>
                         <div class="form-group">
                             <input type="text" class="form-control" id="address_line_1" name="address_line_1"
@@ -104,7 +105,7 @@
         </div>
     </div>
      {{-- Edit Branch --}}
-   <div class="modal fade" id="Edit_pageModel">
+   <div class="modal fade" id="Edit_suppliersModel">
         <div class="modal-dialog modal-dialog-centered text-center" role="document">
             <div class="modal-content modal-content-demo">
                 <div class="modal-header">
@@ -112,7 +113,7 @@
                         data-bs-dismiss="modal"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body">
-                    <form id="Edit_pageForm">
+                    <form id="Edit_suppliersForm">
                         @csrf
                         @method('PUT')
                         <div class="form-group">
@@ -154,7 +155,7 @@
                        <div class="form-group">
                             <input type="text" class="form-control" id="pincode" name="pincode"
                                 placeholder="Pincode">
-                            <div class="text-start text-danger edit_city"></div>
+                            <div class="text-start text-danger edit_pincode"></div>
                         </div>
                        <div class="form-group">
                             <input type="text" class="form-control" id="country" name="country"
@@ -223,7 +224,7 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="page_table" class="table table-bordered text-nowrap mb-0">
+                        <table id="suppliers_table" class="table table-bordered text-nowrap mb-0">
                             <thead class="border-top">
                                 <tr>
                                     <th class="bg-transparent border-bottom-0 w-5">S.no</th>
@@ -248,27 +249,41 @@
                                 @php $i = 1; @endphp
                                 @foreach ($suppliers as $supplier)
 
-                                <?php
-                                if(isset($supplier->parent_id))
-                                {
-                                $parentpage = \App\Models\Supplier::where('id',$supplier->parent_id)->first();
-                                $parent = $parentpage->name;
-                                }
-                                else
-                                {
-                                 $parent = 'Parent Page';
-                                }
+                                {{-- <?php
+                                // if(isset($supplier->parent_id))
+                                // {
+                                // $parentpage = \App\Models\Supplier::where('id',$supplier->parent_id)->first();
+                                // $parent = $parentpage->name;
+                                // }
+                                // else
+                                // {
+                                //  $parent = 'Parent Page';
+                                // }
 
-                                ?>
+                                // ?> --}}
 
                                     <tr class="border-bottom">
                                         <td class="text-muted fs-12 fw-semibold text-center">{{ $i++ }}</td>
                                         <td>
-                                            {{ $page->name }}
-                                        </td>
-
-                                       <td> {{$parent}} </td>
-                                       <td> {{ $page->page_url }} </td>
+                                            {{ $supplier->suppliername }} </td>
+                                       <td> {{$supplier->supplier_contact_name}} </td>
+                                       <td> {{ $supplier->address_line_1 }} </td>
+                                       <td> {{ $supplier->address_line_2 }} </td>
+                                       <td> {{ $supplier->address_line_3 }} </td>
+                                       <td> {{ $supplier->city }} </td>
+                                       <td> {{ $supplier->state }} </td>
+                                       <td> {{ $supplier->pincode }} </td>
+                                       <td> {{ $supplier->country }} </td>
+                                       <td> {{ $supplier->gstin }} </td>
+                                       <td> {{ $supplier->website }} </td>
+                                       <td> {{ $supplier->email }} </td>
+                                       <td> {{ $supplier->mobileno }} </td>
+                                       <td> {{ $supplier->phoneno }} </td>
+                                       @if ($supplier->status == 1)
+                                            <td class="text-success fs-12 fw-semibold">Active</td>
+                                        @else
+                                            <td class="text-danger fs-12 fw-semibold">Inactive</td>
+                                        @endif
                                         <td class="">
                                              @php
                                                 $permission = new \App\Models\Permission();
@@ -354,7 +369,7 @@
                 //     }).prop("selected", true);
 
 
-                    $("#edit_parent_id").val(res.data.parent_id).trigger("change"); // Updated By Gowtham.s
+                    // $("#edit_parent_id").val(res.data.parent_id).trigger("change"); // Updated By Gowtham.s
                     $("#edit_suppliername").val(res.data.suppliername);
                     $("#edit_supplier_contact_name").val(res.data.supplier_contact_name);
                     $("#edit_address_line_1").val(res.data.address_line_1);
@@ -370,7 +385,7 @@
                     $("#edit_mobileno").val(res.data.mobileno);
                     $("#edit_phoneno").val(res.data.phoneno);
                     $("#edit_status").val(res.data.status).trigger("change");
-                    $("#page_id").val(res.data.id);
+
                 },
             });
         }
@@ -378,7 +393,7 @@
         function deletePage(id) {
             swal({
                     title: "Are you sure?",
-                    text: "Confirm to delete this Page?",
+                    text: "Confirm to delete this Suppliers?",
                     type: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#DD6B55",
@@ -395,7 +410,7 @@
                         formData.append("_token", "{{ csrf_token() }}");
                         formData.append("id", id);
                         $.ajax({
-                            url: '{{ url('/') }}' + "/pages/" + id + "/delete",
+                            url: '{{ url('/') }}' + "/suppliers/" + id + "/delete",
                             data: formData,
                             type: 'DELETE',
                             contentType: false,
@@ -403,11 +418,11 @@
                             dataType: "json",
                             success: function(res) {
                                 if (res) {
-                                    swal("Deleted!", "Page has been deleted.", "success");
+                                    swal("Deleted!", "Supplier has been deleted.", "success");
                                     window.location.href = redirect;
 
                                 } else {
-                                    swal("Page Delete Failed", "Please try again. :)", "error");
+                                    swal("Supplier Delete Failed", "Please try again. :)", "error");
                                 }
                             }
                         });

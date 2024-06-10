@@ -14,7 +14,7 @@ function toCurrency($value, $currency, $fractionDigits = 0)
     $formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, $fractionDigits);
     $formattedNumber = $formatter->format($value);
 
-    return $formattedNumber;
+     return $formattedNumber;
 }
 
  function IND_money_format($money){
@@ -38,8 +38,8 @@ function toCurrency($value, $currency, $fractionDigits = 0)
             // }
             return $result;
         }
-        
-        
+
+
 function rupee_format($num) {
         $explrestunits = "" ;
         if(strlen($num)>3){
