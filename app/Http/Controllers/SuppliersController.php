@@ -11,8 +11,8 @@ class SuppliersController extends Controller
     {
         try {
             // $supplier = Supplier::orderBy('id', 'asc')->get();
-            $supplier = Supplier::all();
-            return view('suppliers.index', compact('supplier'));
+            $suppliers = Supplier::all();
+            return view('suppliers.index', compact('suppliers'));
         } catch (\Exception $e) {
             return back()->with(['error' => $e->getMessage()])->withInput();
         }
@@ -20,7 +20,7 @@ class SuppliersController extends Controller
 
     public function store(Request $request)
     {
-        $validator = $request->validate([
+        $request->validate([
             'suppliername' => 'required',
             'supplier_contact_name' => 'required',
             'address_line_1' => 'required',
@@ -39,20 +39,35 @@ class SuppliersController extends Controller
          ]);
 
 
-         Supplier::create($validator);
-         return response()->json(['status' => true, 'message' => 'Supplier Created Successfully!'], 200);
-        // $insert = Supplier::insert([
-        //     'name' => $request->name,
-        //     'page_url' => $request->page_url,
-        //     'parent_id' => $request->parent_id,
-        //     'is_parent' => $request->is_parent
-        //     ]);
-        // if($insert)
-        // {
-        // return response()->json(['status' => true, 'message' => 'Page Created Successfully!'], 200);
-        // }else{
-        // return response()->json(['status' => false, 'message' => 'Unable to Create the Page!'], 400);
-        // }
+        //  Supplier::create($validator);
+        //  return response()->json(['status' => true, 'message' => 'Supplier Created Successfully!'], 200);
+        // // $insert = Supplier::insert([
+        // //     'name' => $request->name,
+        // //     'page_url' => $request->page_url,
+        // //     'parent_id' => $request->parent_id,
+        // //     'is_parent' => $request->is_parent
+        // //     ]);
+        $suppliers = new Supplier();
+        $suppliers->suppliername = $request->suppliername;
+        $suppliers->supplier_contact_name = $request->supplier_contact_name;
+        $suppliers->address_line_1 = $request->address_line_1;
+        $suppliers->address_line_2 = $request->address_line_2;
+        $suppliers->address_line_3 = $request->address_line_3;
+        $suppliers->city = $request->city;
+        $suppliers->state = $request->state;
+        $suppliers->pincode = $request->pincode;
+        $suppliers->country = $request->country;
+        $suppliers->gstin = $request->gstin;
+        $suppliers->website = $request->website;
+        $suppliers->email = $request->email;
+        $suppliers->mobileno = $request->mobileno;
+        $suppliers->phoneno = $request->phoneno;
+        $suppliers->status = $request->status;
+        $insert = $suppliers->save();
+        if ($insert) {
+            return response()->json(['status' => true, 'message' => 'Supplier Created Successfully!'], 200);
+        }
+        return response()->json(['status' => false, 'message' => 'Supplier Created Failed!']);
 
     }
 
@@ -77,7 +92,7 @@ class SuppliersController extends Controller
     public function update(Request $request, $id)
     {
 
-        $validator = $request->validate([
+        $request->validate([
 
             'edit_suppliername' => 'required',
             'edit_supplier_contact_name' => 'required',

@@ -445,10 +445,16 @@ Route::middleware(['auth'])->group(function () {
 
 
     // Suppliers
+    // Route::post('/suppliers', [SuppliersController::class, 'store'])->name('suppliers.store');
     Route::get('/suppliers', [SuppliersController::class, 'index'])->name('suppliers.index');
-    Route::post('/store_suppliers', [SuppliersController::class, 'store'])->name('suppliers.store');
+    Route::post('/suppliers', [SuppliersController::class, 'store'])->name('suppliers.store');
     Route::get('/suppliers/{id}/edit', [SuppliersController::class, 'edit'])->name('suppliers.edit');
     Route::put('suppliers/{id}', [SuppliersController::class, 'update'])->name('suppliers.update');
     Route::delete('/suppliers/{id}/delete', [SuppliersController::class, 'delete'])->name('suppliers.destroy');
 });
-   
+//   //vehicles
+//   Route::get('/vehicle', [VehicleController::class, 'index'])->name('vehicle.index');
+//   Route::post('/vehicle-store', [VehicleController::class, 'store'])->name('vehicle.store');
+//   Route::get('/vehicle/{id}/edit', [VehicleController::class, 'edit'])->name('vehicle.edit');
+//   Route::put('vehicle/{id}', [VehicleController::class, 'update'])->name('vehicle.update');
+//   Route::delete('/vehicle/{id}/delete', [VehicleController::class, 'delete'])->name('vehicle.destroy');
