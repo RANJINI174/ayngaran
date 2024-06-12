@@ -128,7 +128,7 @@
                                                         </svg></i>
                                                 </button>
                                             @endif
-                                                                                       
+
                                             @php
                                                 $permission = new \App\Models\Permission();
                                                 $delete_check = $permission->checkPermission('vehicles.delete');

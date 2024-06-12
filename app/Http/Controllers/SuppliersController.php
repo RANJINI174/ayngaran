@@ -4,19 +4,33 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Supplier;
+use App\Models\Permission;
 
 class SuppliersController extends Controller
 {
     public function index()
     {
-        try {
-            // $supplier = Supplier::orderBy('id', 'asc')->get();
-            $suppliers = Supplier::all();
-            return view('suppliers.index', compact('suppliers'));
-        } catch (\Exception $e) {
-            return back()->with(['error' => $e->getMessage()])->withInput();
-        }
+        $suppliers = Supplier::all(); // or use any other method to fetch data
+    // return view('suppliers.index', compact('suppliers'));
+    return view('suppliers.index', ['suppliers' => $suppliers]);
+
+        // try {
+        //     // $supplier = Supplier::orderBy('id', 'asc')->get();
+        //     $suppliers = Supplier::all();
+        //     return view('suppliers.index', compact('suppliers'));
+        // } catch (\Exception $e) {
+        //     return back()->with(['error' => $e->getMessage()])->withInput();
+        // }
+
     }
+    public function create()
+    {
+        $supplier = Supplier::all();
+        // $categories = categories::all();
+        //return view('sports.create')->with('categories',$categories);
+        return view('suppliers.create',compact('supplier'));
+    }
+
 
     public function store(Request $request)
     {
@@ -73,11 +87,13 @@ class SuppliersController extends Controller
 
     public function edit($id)
     {
+
         try {
             if (!empty($id)) {
                 $supplier = Supplier::where('id', $id)->first();
                 if ($supplier != null) {
                     return response()->json(['status' => true, 'data' => $supplier], 200);
+                    // return view('edit_supplier', ['supplier' => $supplier]);
                 } else {
                     return response()->json(['data' => 'Supplier Not Found']);
                 }
@@ -110,7 +126,7 @@ class SuppliersController extends Controller
             'edit_phoneno' => 'required',
             'edit_status' => 'required'
         ],[
-            'edit_suppliername.required' => 'The designation field is required.',
+            'edit_suppliername.required' => 'The suppliername field is required.',
             'edit_supplier_contact_name.required' => 'The supplier_contact_name feild is required.',
             'edit_address_line_1.required' => 'The address_line_1 feild is required.',
             'edit_address_line_2.required' => 'The address_line_2 feild is required.',
@@ -126,13 +142,32 @@ class SuppliersController extends Controller
             'edit_phoneno.required' => 'The phoneno feild is required.',
             'edit_status.required' => 'The status field is required.'
         ]);
-        Supplier::where('id', $id)->update(['suppliername' => $request->edit_suppliername, 'supplier_contact_name' => $request->edit_supplier_contact_name,
-        'address_line_1' => $request->edit_address_line_1, 'address_line_2' => $request->edit_address_line_2, 'address_line_3' => $request->edit_address_line_3, 'city' => $request->edit_city,
-        'state' => $request->edit_state, 'pincode' => $request->edit_pincode, 'country' => $request->edit_country, 'gstin' => $request->edit_gstin,
-        'website' => $request->edit_website, 'email' => $request->edit_email,  'mobileno' => $request->edit_mobileno,  'phoneno' => $request->edit_phoneno, 'status' => $request->edit_status
-    ]);
-
-        return response()->json(['status' => true, 'message' => 'Page was Updated Successfully!'], 200);
+    // $update = Supplier::where('id', $id)->update(['suppliername' => $request->edit_suppliername, 'supplier_contact_name' => $request->edit_supplier_contact_name,
+    //     'address_line_1' => $request->edit_address_line_1, 'address_line_2' => $request->edit_address_line_2, 'address_line_3' => $request->edit_address_line_3, 'city' => $request->edit_city,
+    //     'state' => $request->edit_state, 'pincode' => $request->edit_pincode, 'country' => $request->edit_country, 'gstin' => $request->edit_gstin,
+    //     'website' => $request->edit_website, 'email' => $request->edit_email,  'mobileno' => $request->edit_mobileno,  'phoneno' => $request->edit_phoneno, 'status' => $request->edit_status
+    $update = Supplier::where('id', $id)->update([
+    'suppliername' => $request->edit_suppliername,
+    'supplier_contact_name' => $request->edit_supplier_contact_name,
+    'address_line_1' => $request->edit_address_line_1,
+    'address_line_2' => $request->edit_address_line_2,
+    'address_line_3' => $request->edit_address_line_3,
+    'city' => $request->edit_city,
+    'state' => $request->edit_state,
+    'pincode' => $request->edit_pincode,
+    'country' => $request->edit_country,
+    'gstin' => $request->edit_gstin,
+    'website' => $request->edit_website,
+    'email' => $request->edit_email,
+    'mobileno' => $request->edit_mobileno,
+    'phoneno' => $request->edit_phoneno,
+    'status' => $request->edit_status
+]);
+    if ($update) {
+        return response()->json(['status' => true, 'message' => 'Supplier Updated Successfully!'], 200);
+    }
+    return response()->json(['status' => false, 'message' => 'Supplier Updated Failed!']);
+        // return response()->json(['status' => true, 'message' => 'Page was Updated Successfully!'], 200);
     }
 
     public function delete($id)

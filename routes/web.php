@@ -447,7 +447,8 @@ Route::middleware(['auth'])->group(function () {
     // Suppliers
     // Route::post('/suppliers', [SuppliersController::class, 'store'])->name('suppliers.store');
     Route::get('/suppliers', [SuppliersController::class, 'index'])->name('suppliers.index');
-    Route::post('/suppliers', [SuppliersController::class, 'store'])->name('suppliers.store');
+    // Route::get('/suppliers/create', [SuppliersController::class, 'create'])->name('suppliers.create');
+    Route::post('/suppliers/store', [SuppliersController::class, 'store'])->name('suppliers.store');
     Route::get('/suppliers/{id}/edit', [SuppliersController::class, 'edit'])->name('suppliers.edit');
     Route::put('suppliers/{id}', [SuppliersController::class, 'update'])->name('suppliers.update');
     Route::delete('/suppliers/{id}/delete', [SuppliersController::class, 'delete'])->name('suppliers.destroy');
