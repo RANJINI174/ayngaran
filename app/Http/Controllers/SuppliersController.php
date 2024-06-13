@@ -105,6 +105,8 @@ class SuppliersController extends Controller
         }
     }
 
+
+
     public function update(Request $request, $id)
     {
 
@@ -142,10 +144,7 @@ class SuppliersController extends Controller
             'edit_phoneno.required' => 'The phoneno feild is required.',
             'edit_status.required' => 'The status field is required.'
         ]);
-    // $update = Supplier::where('id', $id)->update(['suppliername' => $request->edit_suppliername, 'supplier_contact_name' => $request->edit_supplier_contact_name,
-    //     'address_line_1' => $request->edit_address_line_1, 'address_line_2' => $request->edit_address_line_2, 'address_line_3' => $request->edit_address_line_3, 'city' => $request->edit_city,
-    //     'state' => $request->edit_state, 'pincode' => $request->edit_pincode, 'country' => $request->edit_country, 'gstin' => $request->edit_gstin,
-    //     'website' => $request->edit_website, 'email' => $request->edit_email,  'mobileno' => $request->edit_mobileno,  'phoneno' => $request->edit_phoneno, 'status' => $request->edit_status
+
     $update = Supplier::where('id', $id)->update([
     'suppliername' => $request->edit_suppliername,
     'supplier_contact_name' => $request->edit_supplier_contact_name,

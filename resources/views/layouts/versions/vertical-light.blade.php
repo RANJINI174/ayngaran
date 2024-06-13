@@ -18,7 +18,7 @@
     <title>Ayngaran</title>
 
     @include('layouts.vertical.styles')
-
+   
 </head>
 
 <body class="app sidebar-mini">

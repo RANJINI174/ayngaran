@@ -102,7 +102,7 @@
             </div>
         </div>
     </div>
-    {{-- Edit Branch --}}
+    {{-- Edit Supplier --}}
 
     <div class="modal fade" id="Edit_Supplier_Model">
         <div class="modal-dialog modal-dialog-centered text-center" role="document">
@@ -112,21 +112,17 @@
                         data-bs-dismiss="modal"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body">
-                    {{-- <form id="Edit_supplier_Form" autocomplete="off"> --}}
-                        <form id="edit_supplier_form" action="{{ url('suppliers/update') }}" method="POST">
+                     <form id="Edit_supplier_Form" autocomplete="off">
+                        {{-- <form id="Edit_Supplier_form" action="{{ url('suppliers/update') }}" method="POST"> --}}
                          @csrf
                          @method('PUT')
-                        {{-- <form action="{{ url('suppliers/' .$supplier->id) }}" method="post"> --}}
-                            {{-- {!! csrf_field() !!}
-                            @method("PATCH") --}}
                         <div class="form-group">
                             <input type="hidden" id="supplier_id">
                             <input type="text" class="form-control" id="edit_suppliername"  name="edit_suppliername"
                                 placeholder="SupplierName">
                             <div class="text-start text-danger edit_suppliername"></div>
                         </div>
-                        {{-- <label>Name</label></br>
-        <input type="text" name="name" id="name" value="{{$sports->name}}" class="form-control"></br> --}}
+
                         <div class="form-group">
                             <input type="text" class="form-control" id="edit_supplier_contact_name"  name="edit_supplier_contact_name" placeholder="Supplier Contact Name">
                             <div class="text-start text-danger edit_supplier_contact_name"></div>
@@ -360,7 +356,7 @@
                 });
             });
 
-        // edit branch
+        // edit Supplier
 
         function EditSupplierModel(id) {
 
@@ -391,39 +387,35 @@
                     $("#edit_mobileno").val(res.data.mobileno);
                     $("#edit_phoneno").val(res.data.phoneno);
                     $("#edit_status").val(res.data.status).trigger("change");
-                    $("#suppliers_id").val(res.data.id);
+                    $("#supplier_id").val(res.data.id);
                 },
             });
         }
-        // update supplier
-$('#Edit_Supplier_Form').submit(function(event) {
-    event.preventDefault();
-    var id = $("#suppliers_id").val();
-    var formData = new FormData($(this)[0]);
+
+ // update supplier
+
+$('#Edit_supplier_Form').on('submit', function(e) {
+    e.preventDefault();
+
     $.ajax({
-        url: '{{ url('/') }}/suppliers/' + id,
-        method: 'PUT', // change method to POST as we're simulating PUT through _method: 'PUT'
-        data: formData,
-        contentType: false,
-        processData: false,
-        success: function(res) {
-            if (res.status) {
+        url: '{{ url('suppliers') }}/' + $("#supplier_id").val(),
+        method: 'PUT',
+        data: $(this).serialize(),
+        success: function(response) {
+            if (response.status) {
+                alert('Supplier updated successfully!');
                 $('#Edit_Supplier_Model').modal('hide');
-                swal("Success", res.message, "success").then(() => {
-                    location.reload(); // Reload the page after successful update
-                });
+                // Optionally, reload the table or update UI as needed
+                table.ajax.reload(); // Reload the DataTable
             } else {
-                $.each(res.message, function(key, value) {
-                    $("#" + key).html(value);
-                });
+                alert('Failed to update supplier!');
             }
         },
-        error: function(xhr, status, error) {
-            swal("Error", "Failed to update supplier. Please try again.", "error");
+        error: function(xhr) {
+            alert('An error occurred: ' + xhr.status + ' ' + xhr.statusText);
         }
     });
 });
-
         function deleteOrder(id) {
             swal({
                     title: "Are you sure?",

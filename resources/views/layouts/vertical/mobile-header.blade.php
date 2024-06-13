@@ -17,35 +17,35 @@
                 <?php
                  $current_date = date('d');
                  $current_month = date('m');
-                
+
                 $get_user = \App\Models\User::whereMonth('dob',$current_month)->whereDay('dob',$current_date)->where('status',1)->get();
-                
+
                 $get_wedding_user = \App\Models\User::whereMonth('wedding_date',$current_month)->whereDay('wedding_date',$current_date)->where('status',1)->get();
-                
+
                 $user_name = '';
                 $user_name_1 = '';
                 $user_name_con = '';
                 $user_name_con_1 = '';
                 ?>
-                <marquee scrolldelay="200" style="font-size:15px !important;padding-top:5px !important"><img style="width:25px; height:15px" src="{{ asset('assets/images/cake_1.png') }}">Celebrating Birthday today &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 
+                <marquee scrolldelay="200" style="font-size:15px !important;padding-top:5px !important"><img style="width:25px; height:15px" src="{{ asset('assets/images/cake_1.png') }}">Celebrating Birthday today &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
                 @if(isset($get_user))
-                
+
                  <?php
                 foreach($get_user as $user)
                 {
                 if($user_name)
-                
+
                     {
-                       $user_name_con = ' ,'; 
+                       $user_name_con = ' ,';
                     }
-                    
+
                     $user_name = $user->name;
-                    
-                    
+
+
                     echo $user_name.' ,';
                 }
-                    
-               
+
+
                ?>
                 @endif<img src="{{ asset('assets/images/cake_2.png') }}" style="width:25px; height:15px">
                 <br><img style="width:25px; height:15px" src="{{ asset('assets/images/part_1.png') }}">Celebrating Wedding day today &nbsp;:
@@ -54,18 +54,18 @@
                 foreach($get_wedding_user as $user)
                 {
                 if($user_name_1)
-                
+
                     {
-                       $user_name_con_1 = ' ,'; 
+                       $user_name_con_1 = ' ,';
                     }
-                    
+
                     $user_name_1 = $user->name;
-                    
-                    
+
+
                     echo $user_name_1.' ,';
                 }
-                    
-               
+
+
                ?>
                 @endif<img style="width:25px; height:15px" src="{{ asset('assets/images/party_2.png') }}"></marquee>
                 {{-- <div class="main-header-center ms-3 d-none d-md-block">
@@ -79,7 +79,7 @@
                         </a>
                         <div class="dropdown-menu header-search dropdown-menu-start">
                             <div class="input-group w-100 p-2">
-                                <input type="text" class="form-control" placeholder="Search....">
+                                <input type="text" class="form-control" placeholder="Search box....">
                                 <div class="input-group-text btn btn-primary">
                                     <i class="fa fa-search" aria-hidden="true"></i>
                                 </div>
@@ -229,26 +229,26 @@
                                     class="avatar  profile-user brround cover-image">
                             </span>
                         </a>
-                        <?php 
+                        <?php
                             // $user = \Illuminate\Support\Facades\Auth()->user();
-                            
+
                         ?>
                      @php
                         use Illuminate\Support\Facades\Auth;
                     @endphp
-                    
+
                     @php
                         $user_email = '';
                         $designation_nmme = '';
-                        
+
                         if (Auth::check()) {
                             $user_id =  Auth::user()->id;
                             $user_details = \App\Models\User::where('id',$user_id)->first();
-                            
+
                             if(!empty($user_details) && $user_details != null){
                               $user_email = $user_details->email;
                             }
-                            
+
                             if(!empty($user_details->designation_id) && $user_details->designation_id !=""){
                             $designation = \App\Models\Designation::where('id',$user_details->designation_id)->first();
                                 if($designation->designation == "Marketing Managers"){

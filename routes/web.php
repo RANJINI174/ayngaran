@@ -53,6 +53,7 @@ use \App\Http\Controllers\ProjectAbstractController;
 use \App\Http\Controllers\ProjectSummaryController;
 use \App\Http\Controllers\MessageController;
 use \App\Http\Controllers\SuppliersController;
+use \App\Http\Controllers\StudentsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -452,10 +453,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/suppliers/{id}/edit', [SuppliersController::class, 'edit'])->name('suppliers.edit');
     Route::put('suppliers/{id}', [SuppliersController::class, 'update'])->name('suppliers.update');
     Route::delete('/suppliers/{id}/delete', [SuppliersController::class, 'delete'])->name('suppliers.destroy');
+
+
+    // Students
+    Route::get('/students', [StudentsController::class, 'index'])->name('students.index');
+    // Route::get('/suppliers/create', [SuppliersController::class, 'create'])->name('suppliers.create');
+    Route::post('/students/store', [StudentsController::class, 'store'])->name('students.store');
+    Route::get('/students/{id}/edit', [StudentsController::class, 'edit'])->name('students.edit');
+    Route::put('students/{id}', [StudentsController::class, 'update'])->name('students.update');
+    Route::delete('/students/{id}/delete', [StudentsController::class, 'delete'])->name('students.destroy');
 });
-//   //vehicles
-//   Route::get('/vehicle', [VehicleController::class, 'index'])->name('vehicle.index');
-//   Route::post('/vehicle-store', [VehicleController::class, 'store'])->name('vehicle.store');
-//   Route::get('/vehicle/{id}/edit', [VehicleController::class, 'edit'])->name('vehicle.edit');
-//   Route::put('vehicle/{id}', [VehicleController::class, 'update'])->name('vehicle.update');
-//   Route::delete('/vehicle/{id}/delete', [VehicleController::class, 'delete'])->name('vehicle.destroy');
