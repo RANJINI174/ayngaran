@@ -1,88 +1,28 @@
 @extends('layouts.app')
 @section('content')
-    <div class="modal fade" id="Add_SupplierModel">
+    <div class="modal fade" id="Add_StudentModel">
         <div class="modal-dialog modal-dialog-centered text-center" role="document">
             <div class="modal-content modal-content-demo">
                 <div class="modal-header">
-                    <h6 class="modal-title">Add Supplier</h6><button aria-label="Close" class="btn-close"
+                    <h6 class="modal-title">Add Student</h6><button aria-label="Close" class="btn-close"
                         data-bs-dismiss="modal"><span aria-hidden="true">&times;</span></button>
                   </div>
                 <div class="modal-body">
                     {{-- <form id="Add_supplierForm" autocomplete="off"> --}}
-                        <form id="Add_supplierForm" action="{{ route('suppliers.store') }}" method="POST">
+                        <form id="Add_studentForm" action="{{ route('students.store') }}" method="POST">
                         @csrf
                         {{-- @method('POST') --}}
                         <div class="form-group">
                             {{-- <input type="hidden" id="url" value="{{ route('suppliers.store') }}"> --}}
-                            <input type="text" class="form-control" id="suppliername" name="suppliername"
-                                placeholder="Supplier Name">
-                            <div class="text-start text-danger suppliername"></div>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="supplier_contact_name" name="supplier_contact_name"
-                                placeholder="Supplier Contact Name">
-                            <div class="text-start text-danger supplier_contact_name"></div>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="address_line_1" name="address_line_1"
-                                placeholder="Address Line 1">
-                            <div class="text-start text-danger address_line_1"></div>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="address_line_2" name="address_line_2"
-                                placeholder="Address Line 2">
-                            <div class="text-start text-danger address_line_2"></div>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="address_line_3" name="address_line_3"
-                                placeholder="Address line 3">
-                            <div class="text-start text-danger address_line_3"></div>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="city" name="city"
-                                placeholder="City">
-                            <div class="text-start text-danger city"></div>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="state" name="state"
-                                placeholder="State">
-                            <div class="text-start text-danger state"></div>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="pincode" name="pincode"
-                                placeholder="Pincode">
-                            <div class="text-start text-danger pincode"></div>
+                            <input type="text" class="form-control" id="name" name="name"
+                                placeholder="Student Name">
+                            <div class="text-start text-danger name"></div>
                         </div>
 
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="country" name="country"
-                                placeholder="Country">
-                            <div class="text-start text-danger country"></div>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="gstin" name="gstin"
-                                placeholder="GSTIN">
-                            <div class="text-start text-danger gstin"></div>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="website" name="website"
-                                placeholder="Website">
-                            <div class="text-start text-danger website"></div>
-                        </div>
                         <div class="form-group">
                             <input type="text" class="form-control" id="email" name="email"
                                 placeholder="Email">
                             <div class="text-start text-danger email"></div>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="mobileno" name="mobileno"
-                                placeholder="Mobile No">
-                            <div class="text-start text-danger mobileno"></div>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="phoneno" name="phoneno"
-                                placeholder="Phone No">
-                            <div class="text-start text-danger phoneno"></div>
                         </div>
 
                         <div class="form-group">
@@ -95,99 +35,41 @@
                         <div class="d-flex align-items-center justify-content-end">
                             <button class="btn btn-primary m-1">Add</button>
                             <!-- <a class="btn btn-light" data-bs-dismiss="modal">Close</a> -->
-                            <a class="btn btn-light" onclick="Cancel_Supplier()">Close</a>
+                            <a class="btn btn-light" onclick="Cancel_Student()">Close</a>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-    {{-- Edit Supplier --}}
+    {{-- Edit Student --}}
 
-    <div class="modal fade" id="Edit_Supplier_Model">
+    <div class="modal fade" id="Edit_Student_Model">
         <div class="modal-dialog modal-dialog-centered text-center" role="document">
             <div class="modal-content modal-content-demo">
                 <div class="modal-header">
-                    <h6 class="modal-title">Edit Supplier</h6><button aria-label="Close" class="btn-close"
+                    <h6 class="modal-title">Edit Student</h6><button aria-label="Close" class="btn-close"
                         data-bs-dismiss="modal"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body">
-                     <form id="Edit_supplier_Form" autocomplete="off">
+                     <form id="Edit_student_Form" autocomplete="off">
                         {{-- <form id="Edit_Supplier_form" action="{{ url('suppliers/update') }}" method="POST"> --}}
                          @csrf
                          @method('PUT')
                         <div class="form-group">
-                            <input type="hidden" id="supplier_id">
-                            <input type="text" class="form-control" id="edit_suppliername"  name="edit_suppliername"
-                                placeholder="SupplierName">
-                            <div class="text-start text-danger edit_suppliername"></div>
+                            <input type="hidden" id="student_id">
+                            <input type="text" class="form-control" id="edit_name"  name="edit_name"
+                                placeholder="StudentName">
+                            <div class="text-start text-danger edit_name"></div>
                         </div>
 
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="edit_supplier_contact_name"  name="edit_supplier_contact_name" placeholder="Supplier Contact Name">
-                            <div class="text-start text-danger edit_supplier_contact_name"></div>
-                        </div>
 
-                       <div class="form-group">
-                            <input type="text" class="form-control" id="edit_address_line_1" name="edit_address_line_1"
-                                placeholder="Address Line 1">
-                            <div class="text-start text-danger edit_address_line_1"></div>
-                        </div>
-                       <div class="form-group">
-                            <input type="text" class="form-control" id="edit_address_line_2" name="edit_address_line_2"
-                                placeholder="Address Line 2">
-                            <div class="text-start text-danger edit_address_line_2"></div>
-                        </div>
-                       <div class="form-group">
-                            <input type="text" class="form-control" id="edit_address_line_3" name="edit_address_line_3"
-                                placeholder="Address Line 3">
-                            <div class="text-start text-danger edit_address_line_3"></div>
-                        </div>
-                       <div class="form-group">
-                            <input type="text" class="form-control" id="edit_city" name="edit_city"
-                                placeholder="City">
-                            <div class="text-start text-danger edit_city"></div>
-                        </div>
-                       <div class="form-group">
-                            <input type="text" class="form-control" id="edit_state" name="edit_state"
-                                placeholder="State">
-                            <div class="text-start text-danger edit_state"></div>
-                        </div>
-                       <div class="form-group">
-                            <input type="text" class="form-control" id="edit_pincode" name="edit_pincode"
-                                placeholder="Pincode">
-                            <div class="text-start text-danger edit_pincode"></div>
-                        </div>
-                       <div class="form-group">
-                            <input type="text" class="form-control" id="edit_country" name="edit_country"
-                                placeholder="Country">
-                            <div class="text-start text-danger edit_country"></div>
-                        </div>
-                       <div class="form-group">
-                            <input type="text" class="form-control" id="edit_gstin" name="edit_gstin"
-                                placeholder="GSTIN">
-                            <div class="text-start text-danger edit_gstin"></div>
-                        </div>
-                       <div class="form-group">
-                            <input type="text" class="form-control" id="edit_website" name="edit_website"
-                                placeholder="Website">
-                            <div class="text-start text-danger edit_website"></div>
-                        </div>
                        <div class="form-group">
                             <input type="text" class="form-control" id="edit_email" name="edit_email"
                                 placeholder="Email">
                             <div class="text-start text-danger edit_email"></div>
                         </div>
-                       <div class="form-group">
-                            <input type="text" class="form-control" id="edit_mobileno" name="edit_mobileno"
-                                placeholder="MobileNo">
-                            <div class="text-start text-danger edit_mobileno"></div>
-                        </div>
-                       <div class="form-group">
-                            <input type="text" class="form-control" id="edit_phoneno" name="edit_phoneno"
-                                placeholder="PhoneNo">
-                            <div class="text-start text-danger edit_phoneno"></div>
-                        </div>
+
                         <div class="form-group">
                             <select name="edit_status" id="edit_status" class="form-control form-select">
                                 <option value="1">Active</option>
@@ -209,9 +91,9 @@
         <div class="col-12 col-sm-12">
             <div class="card ">
                 <div class="card-header  d-flex align-items-center justify-content-between">
-                    <h3 class="card-title mb-0">Suppliers</h3>
+                    <h3 class="card-title mb-0">Students</h3>
                     <button class="add_master_btn" data-bs-effect="effect-fall" data-bs-toggle="modal"
-                    href="#Add_SupplierModel"><span><i class="fe fe-plus"></i></span> Add New</button>
+                    href="#Add_StudentModel"><span><i class="fe fe-plus"></i></span> Add New</button>
                     {{-- @php
                         $permission = new \App\Models\Permission();
                         $create_check = $permission->checkPermission('vehicles.create');
@@ -226,50 +108,26 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="suppliers_table_lists" class="table table-bordered text-nowrap mb-0">
+                        <table id="students_table_lists" class="table table-bordered text-nowrap mb-0">
                             <thead class="border-top">
                                 <tr>
                                     <th class="bg-transparent border-bottom-0 w-5">S.no</th>
-                                    <th class="bg-transparent border-bottom-0">SupplierName</th>
-                                    <th class="bg-transparent border-bottom-0">Supplier Contact Name</th>
-                                    <th class="bg-transparent border-bottom-0">Address Line 1</th>
-                                    <th class="bg-transparent border-bottom-0">Address Line 2</th>
-                                    <th class="bg-transparent border-bottom-0">Address Line 3</th>
-                                    <th class="bg-transparent border-bottom-0">City</th>
-                                    <th class="bg-transparent border-bottom-0">State</th>
-                                    <th class="bg-transparent border-bottom-0">Pincode</th>
-                                    <th class="bg-transparent border-bottom-0">Country</th>
-                                    <th class="bg-transparent border-bottom-0">GSTIN</th>
-                                    <th class="bg-transparent border-bottom-0">Website</th>
+                                    <th class="bg-transparent border-bottom-0">Name</th>
                                     <th class="bg-transparent border-bottom-0">Email</th>
-                                    <th class="bg-transparent border-bottom-0">MobileNo</th>
-                                    <th class="bg-transparent border-bottom-0">PhoneNo</th>
                                     <th class="bg-transparent border-bottom-0">Status</th>
                                     <th class="bg-transparent border-bottom-0">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @if (isset($suppliers))
+                                @if (isset($students))
                                     @php $i = 1; @endphp
-                                    @foreach ($suppliers as $supplier)
+                                    @foreach ($students as $student)
                                         <tr class="border-bottom">
                                             <td class="text-muted fs-12 fw-semibold text-center">{{ $i++ }}
                                             </td>
-                                            <td>{{ $supplier->suppliername }}</td>
-                                            <td> {{$supplier->supplier_contact_name}} </td>
-                                            <td> {{ $supplier->address_line_1 }} </td>
-                                            <td> {{ $supplier->address_line_2 }} </td>
-                                            <td> {{ $supplier->address_line_3 }} </td>
-                                            <td> {{ $supplier->city }} </td>
-                                            <td> {{ $supplier->state }} </td>
-                                            <td> {{ $supplier->pincode }} </td>
-                                            <td> {{ $supplier->country }} </td>
-                                            <td> {{ $supplier->gstin }} </td>
-                                            <td> {{ $supplier->website }} </td>
-                                            <td> {{ $supplier->email }} </td>
-                                            <td> {{ $supplier->mobileno }} </td>
-                                            <td> {{ $supplier->phoneno }} </td>
-                                            @if ($supplier->status == 1)
+                                            <td>{{ $student->name }}</td>
+                                            <td> {{ $student->email }} </td>
+                                            @if ($student->status == 1)
                                                 <td class="text-success fs-12 fw-semibold">Active</td>
                                             @else
                                                 <td class="text-danger fs-12 fw-semibold">Inactive</td>
@@ -282,7 +140,7 @@
                                             @if($edit_check == 1) --}}
                                                 <button class="bg-primary border-0 me-1" data-bs-effect="effect-fall"
                                                     data-bs-toggle="modal"
-                                                    onclick="return EditSupplierModel({{ $supplier->id }})"
+                                                    onclick="return EditStudentModel({{ $student->id }})"
                                                     style="border-radius: 5px;">
 
                                                     <i><svg class="table-edit" xmlns="http://www.w3.org/2000/svg"
@@ -301,7 +159,7 @@
                                             @if($delete_check == 1) --}}
                                                 <button class="bg-danger border-0" data-bs-toggle="tooltip"
                                                     data-bs-original-title="Delete" style="border-radius: 5px;"
-                                                    onclick="deleteOrder('{{ $supplier->id }}')"><i><svg
+                                                    onclick="deleteOrder('{{ $student->id }}')"><i><svg
                                                             class="table-delete" xmlns="http://www.w3.org/2000/svg"
                                                             height="16" viewBox="0 0 24 24" width="12">
                                                             <path d="M0 0h24v24H0V0z" fill="none" />
@@ -326,7 +184,7 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
-            var table = $('#suppliers_table_lists').DataTable();
+            var table = $('#students_table_lists').DataTable();
             $("#status").select2({
                 width: "100%",
             });
@@ -334,7 +192,7 @@
                 width: "100%",
             });
         });
-        $('#Add_supplierForm').on('submit', function(e) {
+        $('#Add_studentForm').on('submit', function(e) {
                 e.preventDefault();
 
                 $.ajax({
@@ -343,11 +201,11 @@
                     data: $(this).serialize(),
                     success: function(response) {
                         if (response.status) {
-                            alert('Supplier added successfully!');
+                            alert('Student added successfully!');
                             // Optionally, reload the table or page to show the new data
                             table.ajax.reload(); // Reload the DataTable
                         } else {
-                            alert('Failed to add supplier!');
+                            alert('Failed to add student!');
                         }
                     },
                     error: function(xhr) {
@@ -356,14 +214,14 @@
                 });
             });
 
-        // edit Supplier
+        // edit Student
 
-        function EditSupplierModel(id) {
+        function EditStudentModel(id) {
 
-            $('#Edit_Supplier_Model').modal('show');
+            $('#Edit_Student_Model').modal('show');
 
             $.ajax({
-                url: '{{ url('/') }}' + "/suppliers/" + id + "/edit",
+                url: '{{ url('/') }}' + "/students/" + id + "/edit",
                 method: "GET",
                 data: {
                     id: id
@@ -372,43 +230,31 @@
                 processData: false,
                 success: function(res) {
 
-                    $("#edit_suppliername").val(res.data.suppliername);
-                    $("#edit_supplier_contact_name").val(res.data.supplier_contact_name);
-                    $("#edit_address_line_1").val(res.data.address_line_1);
-                    $("#edit_address_line_2").val(res.data.address_line_2);
-                    $("#edit_address_line_3").val(res.data.address_line_3);
-                    $("#edit_city").val(res.data.city);
-                    $("#edit_state").val(res.data.state);
-                    $("#edit_pincode").val(res.data.pincode);
-                    $("#edit_country").val(res.data.country);
-                    $("#edit_gstin").val(res.data.gstin);
-                    $("#edit_website").val(res.data.website);
+                    $("#edit_name").val(res.data.name);
                     $("#edit_email").val(res.data.email);
-                    $("#edit_mobileno").val(res.data.mobileno);
-                    $("#edit_phoneno").val(res.data.phoneno);
                     $("#edit_status").val(res.data.status).trigger("change");
-                    $("#supplier_id").val(res.data.id);
+                    $("#student_id").val(res.data.id);
                 },
             });
         }
 
- // update supplier
+ // update student
 
-$('#Edit_supplier_Form').on('submit', function(e) {
+$('#Edit_student_Form').on('submit', function(e) {
     e.preventDefault();
 
     $.ajax({
-        url: '{{ url('suppliers') }}/' + $("#supplier_id").val(),
+        url: '{{ url('students') }}/' + $("#student_id").val(),
         method: 'PUT',
         data: $(this).serialize(),
         success: function(response) {
             if (response.status) {
-                alert('Supplier updated successfully!');
-                $('#Edit_Supplier_Model').modal('hide');
+                alert('Student updated successfully!');
+                $('#Edit_Student_Model').modal('hide');
                 // Optionally, reload the table or update UI as needed
                 table.ajax.reload(); // Reload the DataTable
             } else {
-                alert('Failed to update supplier!');
+                alert('Failed to update student!');
             }
         },
         error: function(xhr) {
@@ -419,7 +265,7 @@ $('#Edit_supplier_Form').on('submit', function(e) {
         function deleteOrder(id) {
             swal({
                     title: "Are you sure?",
-                    text: "Confirm to delete this Supplier?",
+                    text: "Confirm to delete this Student?",
                     type: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#DD6B55",
@@ -430,13 +276,13 @@ $('#Edit_supplier_Form').on('submit', function(e) {
                 },
                 function(isConfirm) {
                     if (isConfirm) {
-                        var redirect = $('meta[name="base_url"]').attr('content') + '/suppliers';
+                        var redirect = $('meta[name="base_url"]').attr('content') + '/students';
                         var token = $('meta[name="csrf-token"]').attr("content");
                         var formData = new FormData();
                         formData.append("_token", "{{ csrf_token() }}");
                         formData.append("id", id);
                         $.ajax({
-                            url: '{{ url('/') }}' + "/suppliers/" + id + "/delete",
+                            url: '{{ url('/') }}' + "/students/" + id + "/delete",
                             data: formData,
                             type: 'DELETE',
                             contentType: false,
@@ -444,11 +290,11 @@ $('#Edit_supplier_Form').on('submit', function(e) {
                             dataType: "json",
                             success: function(res) {
                                 if (res) {
-                                    swal("Deleted!", "Supplier has been deleted.", "success");
+                                    swal("Deleted!", "Student has been deleted.", "success");
                                     window.location.href = redirect;
 
                                 } else {
-                                    swal("Supplier Delete Failed", "Please try again. :)",
+                                    swal("Student Delete Failed", "Please try again. :)",
                                         "error");
                                 }
                             }
@@ -460,14 +306,14 @@ $('#Edit_supplier_Form').on('submit', function(e) {
                 });
         }
 
-        function Cancel_Supplier() {
-            $("#Add_SupplierModel").modal("hide");
-            $("#Add_supplierForm")[0].reset();
+        function Cancel_Student() {
+            $("#Add_StudentModel").modal("hide");
+            $("#Add_studentForm")[0].reset();
             $(".err").html("");
         }
 
         function Cancel_edit_ledger() {
-            $("#Edit_Supplier_Model").modal("hide");
+            $("#Edit_Student_Model").modal("hide");
             $(".err").html("");
         }
     </script>
