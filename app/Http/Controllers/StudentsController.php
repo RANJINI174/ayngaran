@@ -12,8 +12,8 @@ class StudentsController extends Controller
     {
         $students = Student::all(); // or use any other method to fetch data
     // return view('suppliers.index', compact('suppliers'));
-    return view('students.index', ['students' => $students]);
-
+    // return view('students.index', ['students' => $students]);
+    return view('students.index', compact('students'));
 
     }
     public function create()
@@ -48,20 +48,29 @@ class StudentsController extends Controller
     public function edit($id)
     {
 
+        // try {
+        //     if (!empty($id)) {
+        //         $student = Student::where('id', $id)->first();
+        //         if ($student != null) {
+        //             return response()->json(['status' => true, 'data' => $student], 200);
+        //             // return view('edit_supplier', ['supplier' => $supplier]);
+        //         } else {
+        //             return response()->json(['data' => 'Student Not Found']);
+        //         }
+        //     } else {
+        //         return response()->json(['data' => 'Student Not Found']);
+        //     }
+        // } catch (\Exception $e) {
+        //     return back()->with(['error' => $e->getMessage()])->withInput();
+        // }
+
         try {
-            if (!empty($id)) {
-                $student = Student::where('id', $id)->first();
-                if ($student != null) {
-                    return response()->json(['status' => true, 'data' => $student], 200);
-                    // return view('edit_supplier', ['supplier' => $supplier]);
-                } else {
-                    return response()->json(['data' => 'Student Not Found']);
-                }
-            } else {
-                return response()->json(['data' => 'Student Not Found']);
-            }
+            $student = Student::findOrFail($id); // Use findOrFail to automatically handle if not found
+
+            return response()->json(['status' => true, 'data' => $student], 200);
+
         } catch (\Exception $e) {
-            return back()->with(['error' => $e->getMessage()])->withInput();
+            return response()->json(['status' => false, 'message' => $e->getMessage()], 404);
         }
     }
 

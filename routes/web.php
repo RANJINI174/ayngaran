@@ -54,6 +54,7 @@ use \App\Http\Controllers\ProjectSummaryController;
 use \App\Http\Controllers\MessageController;
 use \App\Http\Controllers\SuppliersController;
 use \App\Http\Controllers\StudentsController;
+use \App\Http\Controllers\CoursesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -456,10 +457,19 @@ Route::middleware(['auth'])->group(function () {
 
 
     // Students
+
     Route::get('/students', [StudentsController::class, 'index'])->name('students.index');
-    // Route::get('/suppliers/create', [SuppliersController::class, 'create'])->name('suppliers.create');
     Route::post('/students/store', [StudentsController::class, 'store'])->name('students.store');
     Route::get('/students/{id}/edit', [StudentsController::class, 'edit'])->name('students.edit');
     Route::put('students/{id}', [StudentsController::class, 'update'])->name('students.update');
     Route::delete('/students/{id}/delete', [StudentsController::class, 'delete'])->name('students.destroy');
+
+
+    // Courses
+
+    Route::get('/courses', [CoursesController::class, 'index'])->name('courses.index');
+    Route::post('/courses/store', [CoursesController::class, 'store'])->name('courses.store');
+    Route::get('/courses/{id}/edit', [CoursesController::class, 'edit'])->name('courses.edit');
+    Route::put('courses/{id}', [CoursesController::class, 'update'])->name('courses.update');
+    Route::delete('/courses/{id}/delete', [CoursesController::class, 'delete'])->name('courses.destroy');
 });
