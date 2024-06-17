@@ -12,8 +12,8 @@ class CoursesController extends Controller
     {
         $courses = Course::all(); // or use any other method to fetch data
     // return view('suppliers.index', compact('suppliers'));
-    return view('courses.index', ['courses' => $courses]);
-    // return view('courses.index', compact('courses'));
+    // return view('courses.index', ['courses' => $courses]);
+    return view('courses.index', compact('courses'));
 
     }
 

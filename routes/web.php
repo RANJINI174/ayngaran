@@ -55,6 +55,7 @@ use \App\Http\Controllers\MessageController;
 use \App\Http\Controllers\SuppliersController;
 use \App\Http\Controllers\StudentsController;
 use \App\Http\Controllers\CoursesController;
+use \App\Http\Controllers\AttendanceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -472,4 +473,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/courses/{id}/edit', [CoursesController::class, 'edit'])->name('courses.edit');
     Route::put('courses/{id}', [CoursesController::class, 'update'])->name('courses.update');
     Route::delete('/courses/{id}/delete', [CoursesController::class, 'delete'])->name('courses.destroy');
+
+    //attendance
+    // Route::resource('attendance', 'AttendanceController');
+    Route::get('/attendances', [AttendanceController::class, 'index'])->name('attendances.index');
+    Route::post('/attendances/store', [AttendanceController::class, 'store'])->name('attendances.store');
+    Route::get('/attendances/{id}/edit', [AttendanceController::class, 'edit'])->name('attendances.edit');
+    Route::put('attendances/{id}', [AttendanceController::class, 'update'])->name('attendances.update');
+    Route::delete('/attendances/{id}/delete', [AttendanceController::class, 'delete'])->name('attendances.destroy');
+
 });

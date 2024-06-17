@@ -11,4 +11,15 @@ class Student extends Model
     protected  $table = "students";
     protected $primaryKey = 'id';
     protected $fillable = ['name','email','status'];
+
+
+    public function courses()
+    {
+        return $this->belongsToMany(Course::class, 'course_students');
+    }
+
+    public function attendance()
+    {
+        return $this->hasMany(Attendance::class);
+    }
 }
