@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Course;
+use App\Models\Attendance;
+
 use App\Models\Permission;
 
 class CoursesController extends Controller
@@ -104,5 +106,10 @@ class CoursesController extends Controller
             $course->delete();
             return response()->json(['status' => 200, 'message' => 'Course Deleted Successfully!'], 200);
         }
+    }
+    public function attendanceReport($course_id)
+    {
+        $attendances = Attendance::where('course_id', $course_id)->get();
+        return view('courses.attendance', compact('attendances'));
     }
 }

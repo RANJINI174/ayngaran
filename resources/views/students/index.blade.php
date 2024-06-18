@@ -9,7 +9,8 @@
                   </div>
                 <div class="modal-body">
                     {{-- <form id="Add_supplierForm" autocomplete="off"> --}}
-                    <form id="Add_studentForm" action="{{ route('students.store') }}" method="POST">
+                    {{-- <form id="Add_studentForm" action="{{ route('students.store') }}" method="POST"> --}}
+                        <form id="Add_studentForm" action="javascript:void(0);">
                         @csrf
                         {{-- @method('POST') --}}
                         <div class="form-group">
@@ -180,88 +181,96 @@
 @endsection
 
 @section('scripts')
-    <script>
-        $(document).ready(function() {
-            var table = $('#students_table_lists').DataTable();
-            $("#status").select2({
-                width: "100%",
-            });
-            $("#edit_status").select2({
-                width: "100%",
-            });
-        });
-        $('#Add_studentForm').on('submit', function(e) {
-                e.preventDefault();
+<script>
+    $(document).ready(function() {
+        $("#Add_studentForm").on("submit", function(event) {
+        event.preventDefault();
+        var formData = $(this).serialize();
 
-                $.ajax({
-                    url: $(this).attr('action'),
-                    method: $(this).attr('method'),
-                    data: $(this).serialize(),
-                    success: function(response) {
-                        if (response.status) {
-                            alert('Student added successfully!');
-                            // Optionally, reload the table or page to show the new data
-                            table.ajax.reload(); // Reload the DataTable
-                        } else {
-                            alert('Failed to add student!');
-                        }
-                    },
-                    error: function(xhr) {
-                        alert('An error occurred: ' + xhr.status + ' ' + xhr.statusText);
-                    }
+        $.ajax({
+            url: '{{ route("students.store") }}',
+            method: "POST",
+            data: formData,
+            success: function(res) {
+                if (res.status) {
+                    swal("Created!", res.message, "success");
+                    // Refresh the table or update the DOM to reflect the new student
+                    $('#Add_StudentModel').modal('hide');
+                    $("#Add_studentForm")[0].reset();
+                    location.reload(); // Reload the page to see the changes
+                } else {
+                    swal("Error!", res.message, "error");
+                }
+            },
+            error: function(xhr) {
+                var response = JSON.parse(xhr.responseText);
+                var errors = response.errors;
+
+                $.each(errors, function(key, value) {
+                    $("." + key).html(value[0]);
                 });
-            });
 
-        // edit Student
-
-        function EditStudentModel(id) {
-
-            $('#Edit_Student_Model').modal('show');
-
-            $.ajax({
-                url: '{{ url('/') }}' + "/students/" + id + "/edit",
-                method: "GET",
-                data: {
-                    id: id
-                },
-                contentType: false,
-                processData: false,
-                success: function(res) {
-
-                    $("#edit_name").val(res.data.name);
-                    $("#edit_email").val(res.data.email);
-                    $("#edit_status").val(res.data.status).trigger("change");
-                    $("#student_id").val(res.data.id);
-                },
-            });
-        }
-
- // update student
-
-$('#Edit_student_Form').on('submit', function(e) {
-    e.preventDefault();
-
-    $.ajax({
-        url: '{{ url('students') }}/' + $("#student_id").val(),
-        method: 'PUT',
-        data: $(this).serialize(),
-        success: function(response) {
-            if (response.status) {
-                alert('Student updated successfully!');
-                $('#Edit_Student_Model').modal('hide');
-                // Optionally, reload the table or update UI as needed
-                table.ajax.reload(); // Reload the DataTable
-            } else {
-                alert('Failed to update student!');
+                swal("Error!", "There are errors in the form. Please fix them and try again.", "error");
             }
-        },
-        error: function(xhr) {
-            alert('An error occurred: ' + xhr.status + ' ' + xhr.statusText);
-        }
+        });
     });
 });
 
- function deleteOrder(id) {
+$("#Edit_student_Form").on("submit", function(event) {
+        event.preventDefault();
+        var id = $("#student_id").val();
+        var formData = $(this).serialize();
+
+        $.ajax({
+            url: '{{ url('/') }}' + "/students/" + id,
+            method: "PUT",
+            data: formData,
+            success: function(res) {
+                if (res.status) {
+                    swal("Updated!", res.message, "success");
+                    $('#Edit_Student_Model').modal('hide');
+                    $("#Edit_student_Form")[0].reset();
+                    location.reload(); // Reload the page to see the changes
+                } else {
+                    swal("Error!", res.message, "error");
+                }
+            },
+            error: function(xhr) {
+                var response = JSON.parse(xhr.responseText);
+                var errors = response.errors;
+
+                $.each(errors, function(key, value) {
+                    $("." + key).html(value[0]);
+                });
+
+                swal("Error!", "There are errors in the form. Please fix them and try again.", "error");
+            }
+        });
+    });
+
+
+    // edit student
+    function EditStudentModel(id) {
+        $('#Edit_Student_Model').modal('show');
+
+        $.ajax({
+            url: '{{ url('/') }}' + "/students/" + id + "/edit",
+            method: "GET",
+            data: {
+                id: id
+            },
+            contentType: false,
+            processData: false,
+            success: function(res) {
+                $("#edit_name").val(res.data.name);
+                $("#edit_email").val(res.data.email);
+                $("#edit_status").val(res.data.status).trigger("change");
+                $("#student_id").val(res.data.id);
+            },
+        });
+    }
+
+    function deleteOrder(id) {
             swal({
                     title: "Are you sure?",
                     text: "Confirm to delete this Student?",
@@ -309,15 +318,15 @@ $('#Edit_student_Form').on('submit', function(e) {
                 });
         }
 
-        function Cancel_Student() {
-            $("#Add_StudentModel").modal("hide");
-            $("#Add_studentForm")[0].reset();
-            $(".err").html("");
-        }
+    function Cancel_Student() {
+        $("#Add_StudentModel").modal("hide");
+        $("#Add_StudentForm")[0].reset();
+        $(".err").html("");
+    }
 
-        function Cancel_edit_ledger() {
-            $("#Edit_Student_Model").modal("hide");
-            $(".err").html("");
-        }
-    </script>
+    function Cancel_edit_student() {
+        $("#Edit_Student_Model").modal("hide");
+        $(".err").html("");
+    }
+</script>
 @endsection

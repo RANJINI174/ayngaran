@@ -1,26 +1,28 @@
 @extends('layouts.app')
 @section('content')
-    <div class="modal fade" id="Add_CourseModel">
+    <div class="modal fade" id="Add_StudentModel">
         <div class="modal-dialog modal-dialog-centered text-center" role="document">
             <div class="modal-content modal-content-demo">
                 <div class="modal-header">
-                    <h6 class="modal-title">Add Course</h6><button aria-label="Close" class="btn-close"
+                    <h6 class="modal-title">Add Student</h6><button aria-label="Close" class="btn-close"
                         data-bs-dismiss="modal"><span aria-hidden="true">&times;</span></button>
                   </div>
                 <div class="modal-body">
                     {{-- <form id="Add_supplierForm" autocomplete="off"> --}}
-                    <form id="Add_courseForm" action="{{ route('courses.store') }}" method="POST">
+                    <form id="Add_studentForm" action="{{ route('students.store') }}" method="POST">
                         @csrf
-                        {{-- @method('POST') --}}
+                        {{-- @method('POST') --}}   
                         <div class="form-group">
-                            <input type="text" class="form-control" id="title" name="title"
-                                placeholder="Title">
-                            <div class="text-start text-danger title"></div>
+                            {{-- <input type="hidden" id="url" value="{{ route('suppliers.store') }}"> --}}
+                            <input type="text" class="form-control" id="name" name="name"
+                                placeholder=" Name">
+                            <div class="text-start text-danger name"></div>
                         </div>
+
                         <div class="form-group">
-                            <input type="text" class="form-control" id="description" name="description"
-                                placeholder="Description">
-                            <div class="text-start text-danger description"></div>
+                            <input type="text" class="form-control" id="email" name="email"
+                                placeholder="Email">
+                            <div class="text-start text-danger email"></div>
                         </div>
 
                         <div class="form-group">
@@ -33,38 +35,39 @@
                         <div class="d-flex align-items-center justify-content-end">
                             <button class="btn btn-primary m-1">Add</button>
                             <!-- <a class="btn btn-light" data-bs-dismiss="modal">Close</a> -->
-                            <a class="btn btn-light" onclick="Cancel_Course()">Close</a>
+                            <a class="btn btn-light" onclick="Cancel_Student()">Close</a>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-    {{-- Edit Course --}}
+    {{-- Edit Student --}}
 
-    <div class="modal fade" id="Edit_Course_Model">
+    <div class="modal fade" id="Edit_Student_Model">
         <div class="modal-dialog modal-dialog-centered text-center" role="document">
             <div class="modal-content modal-content-demo">
                 <div class="modal-header">
-                    <h6 class="modal-title">Edit Course</h6><button aria-label="Close" class="btn-close"
+                    <h6 class="modal-title">Edit Student</h6><button aria-label="Close" class="btn-close"
                         data-bs-dismiss="modal"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body">
-                     <form id="Edit_course_Form" autocomplete="off">
+                     <form id="Edit_student_Form" autocomplete="off">
                         {{-- <form id="Edit_Supplier_form" action="{{ url('suppliers/update') }}" method="POST"> --}}
                          @csrf
                          @method('PUT')
                         <div class="form-group">
-                            <input type="hidden" id="course_id">
-                            <input type="text" class="form-control" id="edit_title"  name="edit_title"
-                                placeholder="Title">
-                            <div class="text-start text-danger edit_title"></div>
+                            <input type="hidden" id="student_id">
+                            <input type="text" class="form-control" id="edit_name"  name="edit_name"
+                                placeholder="Name">
+                            <div class="text-start text-danger edit_name"></div>
                         </div>
                        <div class="form-group">
-                            <input type="text" class="form-control" id="edit_description" name="edit_description"
-                                placeholder="Description">
-                            <div class="text-start text-danger edit_description"></div>
+                            <input type="text" class="form-control" id="edit_email" name="edit_email"
+                                placeholder="Email">
+                            <div class="text-start text-danger edit_email"></div>
                         </div>
+
                         <div class="form-group">
                             <select name="edit_status" id="edit_status" class="form-control form-select">
                                 <option value="1">Active</option>
@@ -86,9 +89,9 @@
         <div class="col-12 col-sm-12">
             <div class="card ">
                 <div class="card-header  d-flex align-items-center justify-content-between">
-                    <h3 class="card-title mb-0">Course</h3>
+                    <h3 class="card-title mb-0">Students</h3>
                     <button class="add_master_btn" data-bs-effect="effect-fall" data-bs-toggle="modal"
-                    href="#Add_CourseModel"><span><i class="fe fe-plus"></i></span> Add New</button>
+                    href="#Add_StudentModel"><span><i class="fe fe-plus"></i></span> Add New</button>
                     {{-- @php
                         $permission = new \App\Models\Permission();
                         $create_check = $permission->checkPermission('vehicles.create');
@@ -103,26 +106,26 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="courses_table_lists" class="table table-bordered text-nowrap mb-0">
+                        <table id="students_table_lists" class="table table-bordered text-nowrap mb-0">
                             <thead class="border-top">
                                 <tr>
                                     <th class="bg-transparent border-bottom-0 w-5">S.no</th>
-                                    <th class="bg-transparent border-bottom-0">Title</th>
-                                    <th class="bg-transparent border-bottom-0">Description</th>
+                                    <th class="bg-transparent border-bottom-0">Name</th>
+                                    <th class="bg-transparent border-bottom-0">Email</th>
                                     <th class="bg-transparent border-bottom-0">Status</th>
                                     <th class="bg-transparent border-bottom-0">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @if (isset($courses))
+                                @if (isset($students))
                                     @php $i = 1; @endphp
-                                    @foreach ($courses as $course)
+                                    @foreach ($students as $student)
                                         <tr class="border-bottom">
                                             <td class="text-muted fs-12 fw-semibold text-center">{{ $i++ }}
                                             </td>
-                                            <td>{{ $course->title }}</td>
-                                            <td> {{ $course->description }} </td>
-                                            @if ($course->status == 1)
+                                            <td>{{ $student->name }}</td>
+                                            <td> {{ $student->email }} </td>
+                                            @if ($student->status == 1)
                                                 <td class="text-success fs-12 fw-semibold">Active</td>
                                             @else
                                                 <td class="text-danger fs-12 fw-semibold">Inactive</td>
@@ -135,7 +138,7 @@
                                             @if($edit_check == 1) --}}
                                                 <button class="bg-primary border-0 me-1" data-bs-effect="effect-fall"
                                                     data-bs-toggle="modal"
-                                                    onclick="return EditCourseModel({{ $course->id }})"
+                                                    onclick="return EditStudentModel({{ $student->id }})"
                                                     style="border-radius: 5px;">
 
                                                     <i><svg class="table-edit" xmlns="http://www.w3.org/2000/svg"
@@ -154,7 +157,7 @@
                                             @if($delete_check == 1) --}}
                                                 <button class="bg-danger border-0" data-bs-toggle="tooltip"
                                                     data-bs-original-title="Delete" style="border-radius: 5px;"
-                                                    onclick="deleteOrder('{{ $course->id }}')"><i><svg
+                                                    onclick="deleteOrder('{{ $student->id }}')"><i><svg
                                                             class="table-delete" xmlns="http://www.w3.org/2000/svg"
                                                             height="16" viewBox="0 0 24 24" width="12">
                                                             <path d="M0 0h24v24H0V0z" fill="none" />
@@ -178,112 +181,45 @@
 
 @section('scripts')
     <script>
-        // $(document).ready(function() {
-        //     var table = $('#courses_table_lists').DataTable();
-        //     $("#status").select2({
-        //         width: "100%",
-        //     });
-        //     $("#edit_status").select2({
-        //         width: "100%",
-        //     });
-        // });
-        // $('#Add_courseForm').on('submit', function(e) {
-        //         e.preventDefault();
-
-        //         $.ajax({
-        //             url: $(this).attr('action'),
-        //             method: $(this).attr('method'),
-        //             data: $(this).serialize(),
-        //             success: function(response) {
-        //                 if (response.status) {
-        //                     alert('Course added successfully!');
-        //                     // Optionally, reload the table or page to show the new data
-        //                     table.ajax.reload(); // Reload the DataTable
-        //                 } else {
-        //                     alert('Failed to add Course!');
-        //                 }
-        //             },
-        //             error: function(xhr) {
-        //                 alert('An error occurred: ' + xhr.status + ' ' + xhr.statusText);
-        //             }
-        //         });
-        //     });
-
-
-            $(document).ready(function() {
-        $("#Add_courseForm").on("submit", function(event) {
-        event.preventDefault();
-        var formData = $(this).serialize();
-
-        $.ajax({
-            url: '{{ route("courses.store") }}',
-            method: "POST",
-            data: formData,
-            success: function(res) {
-                if (res.status) {
-                    swal("Created!", res.message, "success");
-                    // Refresh the table or update the DOM to reflect the new student
-                    $('#Add_CourseModel').modal('hide');
-                    $("#Add_courseForm")[0].reset();
-                    location.reload(); // Reload the page to see the changes
-                } else {
-                    swal("Error!", res.message, "error");
-                }
-            },
-            error: function(xhr) {
-                var response = JSON.parse(xhr.responseText);
-                var errors = response.errors;
-
-                $.each(errors, function(key, value) {
-                    $("." + key).html(value[0]);
-                });
-
-                swal("Error!", "There are errors in the form. Please fix them and try again.", "error");
-            }
+        $(document).ready(function() {
+            var table = $('#students_table_lists').DataTable();
+            $("#status").select2({
+                width: "100%",
+            });
+            $("#edit_status").select2({
+                width: "100%",
+            });
         });
-    });
-});
+        $('#Add_studentForm').on('submit', function(e) {
+                e.preventDefault();
 
-$("#Edit_course_Form").on("submit", function(event) {
-        event.preventDefault();
-        var id = $("#course_id").val();
-        var formData = $(this).serialize();
-
-        $.ajax({
-            url: '{{ url('/') }}' + "/courses/" + id,
-            method: "PUT",
-            data: formData,
-            success: function(res) {
-                if (res.status) {
-                    swal("Updated!", res.message, "success");
-                    $('#Edit_Course_Model').modal('hide');
-                    $("#Edit_course_Form")[0].reset();
-                    location.reload(); // Reload the page to see the changes
-                } else {
-                    swal("Error!", res.message, "error");
-                }
-            },
-            error: function(xhr) {
-                var response = JSON.parse(xhr.responseText);
-                var errors = response.errors;
-
-                $.each(errors, function(key, value) {
-                    $("." + key).html(value[0]);
+                $.ajax({
+                    url: $(this).attr('action'),
+                    method: $(this).attr('method'),
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        if (response.status) {
+                            alert('Student added successfully!');
+                            // Optionally, reload the table or page to show the new data
+                            table.ajax.reload(); // Reload the DataTable
+                        } else {
+                            alert('Failed to add student!');
+                        }
+                    },
+                    error: function(xhr) {
+                        alert('An error occurred: ' + xhr.status + ' ' + xhr.statusText);
+                    }
                 });
+            });
 
-                swal("Error!", "There are errors in the form. Please fix them and try again.", "error");
-            }
-        });
-    });
+        // edit Student
 
-        // edit Course
+        function EditStudentModel(id) {
 
-        function EditCourseModel(id) {
-
-            $('#Edit_Course_Model').modal('show');
+            $('#Edit_Student_Model').modal('show');
 
             $.ajax({
-                url: '{{ url('/') }}' + "/courses/" + id + "/edit",
+                url: '{{ url('/') }}' + "/students/" + id + "/edit",
                 method: "GET",
                 data: {
                     id: id
@@ -292,20 +228,43 @@ $("#Edit_course_Form").on("submit", function(event) {
                 processData: false,
                 success: function(res) {
 
-                    $("#edit_title").val(res.data.title);
-                    $("#edit_description").val(res.data.description);
+                    $("#edit_name").val(res.data.name);
+                    $("#edit_email").val(res.data.email);
                     $("#edit_status").val(res.data.status).trigger("change");
-                    $("#course_id").val(res.data.id);
+                    $("#student_id").val(res.data.id);
                 },
             });
         }
 
- 
+ // update student
+
+$('#Edit_student_Form').on('submit', function(e) {
+    e.preventDefault();
+
+    $.ajax({
+        url: '{{ url('students') }}/' + $("#student_id").val(),
+        method: 'PUT',
+        data: $(this).serialize(),
+        success: function(response) {
+            if (response.status) {
+                alert('Student updated successfully!');
+                $('#Edit_Student_Model').modal('hide');
+                // Optionally, reload the table or update UI as needed
+                table.ajax.reload(); // Reload the DataTable
+            } else {
+                alert('Failed to update student!');
+            }
+        },
+        error: function(xhr) {
+            alert('An error occurred: ' + xhr.status + ' ' + xhr.statusText);
+        }
+    });
+});
 
  function deleteOrder(id) {
             swal({
                     title: "Are you sure?",
-                    text: "Confirm to delete this Course?",
+                    text: "Confirm to delete this Student?",
                     type: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#DD6B55",
@@ -316,13 +275,13 @@ $("#Edit_course_Form").on("submit", function(event) {
                 },
                 function(isConfirm) {
                     if (isConfirm) {
-                        var redirect = $('meta[name="base_url"]').attr('content') + '/courses';
+                        var redirect = $('meta[name="base_url"]').attr('content') + '/students';
                         var token = $('meta[name="csrf-token"]').attr("content");
                         var formData = new FormData();
                         formData.append("_token", "{{ csrf_token() }}");
                         formData.append("id", id);
                         $.ajax({
-                            url: '{{ url('/') }}' + "/courses/" + id + "/delete",
+                            url: '{{ url('/') }}' + "/students/" + id + "/delete",
                             data: formData,
                             data: {
                     _token: "{{ csrf_token() }}", // Include CSRF token
@@ -334,11 +293,11 @@ $("#Edit_course_Form").on("submit", function(event) {
                             dataType: "json",
                             success: function(res) {
                                 if (res) {
-                                    swal("Deleted!", "Course has been deleted.", "success");
+                                    swal("Deleted!", "Student has been deleted.", "success");
                                     window.location.href = redirect;
 
                                 } else {
-                                    swal("Course Delete Failed", "Please try again. :)",
+                                    swal("Student Delete Failed", "Please try again. :)",
                                         "error");
                                 }
                             }
@@ -350,14 +309,14 @@ $("#Edit_course_Form").on("submit", function(event) {
                 });
         }
 
-        function Cancel_Course() {
-            $("#Add_CourseModel").modal("hide");
-            $("#Add_courseForm")[0].reset();
+        function Cancel_Student() {
+            $("#Add_StudentModel").modal("hide");
+            $("#Add_studentForm")[0].reset();
             $(".err").html("");
         }
 
         function Cancel_edit_ledger() {
-            $("#Edit_Course_Model").modal("hide");
+            $("#Edit_Student_Model").modal("hide");
             $(".err").html("");
         }
     </script>

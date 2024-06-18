@@ -56,6 +56,7 @@ use \App\Http\Controllers\SuppliersController;
 use \App\Http\Controllers\StudentsController;
 use \App\Http\Controllers\CoursesController;
 use \App\Http\Controllers\AttendanceController;
+use \App\Http\Controllers\CourseStudentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -481,5 +482,21 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/attendances/{id}/edit', [AttendanceController::class, 'edit'])->name('attendances.edit');
     Route::put('attendances/{id}', [AttendanceController::class, 'update'])->name('attendances.update');
     Route::delete('/attendances/{id}/delete', [AttendanceController::class, 'delete'])->name('attendances.destroy');
+
+
+   //CourseStudent
+    Route::post('/students/{studentId}/courses', [CourseStudentController::class, 'enrollStudent'])->name('students.courses.enroll');
+    Route::delete('/students/{studentId}/courses/{courseId}', [CourseStudentController::class, 'unenrollStudent'])->name('students.courses.unenroll');
+    Route::get('/students/{studentId}/courses', [CourseStudentController::class, 'studentCourses'])->name('students.courses.list');
+    Route::get('/courses/{courseId}/students', [CourseStudentController::class, 'courseStudents'])->name('courses.students.list');
+
+
+    Route::post('students/{student_id}/courses', [StudentsController::class, 'enrollCourse']);
+    Route::delete('students/{student_id}/courses/{course_id}', [StudentsController::class, 'unenrollCourse']);
+    Route::get('students/{student_id}/attendance', [StudentsController::class, 'attendanceReport']);
+
+    Route::get('courses/{course_id}/attendance', [CoursesController::class, 'attendanceReport']);
+
+    Route::post('attendance/generateReport', [AttendanceController::class, 'generateReport']);
 
 });

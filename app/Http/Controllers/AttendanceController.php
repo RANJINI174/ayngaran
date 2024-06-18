@@ -86,7 +86,7 @@ class AttendanceController extends Controller
         } catch (\Exception $e) {
             return response()->json(['status' => false, 'message' => $e->getMessage()], 404);
         }
-    }
+    }   
 
     // public function update(Request $request, $id)
     // {
