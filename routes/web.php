@@ -485,7 +485,28 @@ Route::middleware(['auth'])->group(function () {
 
 
    //CourseStudent
-    Route::post('/students/{studentId}/courses', [CourseStudentController::class, 'enrollStudent'])->name('students.courses.enroll');
+
+   Route::get('course_students', [CourseStudentController::class, 'index'])->name('course_students.index');
+   Route::post('/course_students/store', [CourseStudentController::class, 'store'])->name('course_students.store');
+   Route::post('enroll_student', [CourseStudentController::class, 'enrollStudent'])->name('course_students.enroll');
+   Route::post('unenroll_student', [CourseStudentController::class, 'unenrollStudent'])->name('course_students.unenroll');
+   Route::get('student_courses/{student}', [CourseStudentController::class, 'studentCourses'])->name('course_students.student_courses');
+   Route::get('course_students/{course}', [CourseStudentController::class, 'courseStudents'])->name('course_students.course_students');
+   Route::post('update_enrollment', [CourseStudentController::class, 'updateEnrollment'])->name('course_students.update_enrollment');
+
+
+   Route::post('/course_students/enroll', [CourseStudentController::class, 'enrollStudent'])->name('course_students.enroll');
+   Route::post('/course_students/unenroll', [CourseStudentController::class, 'unenrollStudent'])->name('course_students.unenroll');
+   Route::post('/course_students/update_enrollment', [CourseStudentController::class, 'updateEnrollment'])->name('course_students.update_enrollment');
+
+
+   Route::put('course_students/{id}', [CourseStudentController::class, 'update'])->name('course_students.update');
+   Route::get('/course_students/{id}/edit', [CourseStudentController::class, 'edit'])->name('course_students.edit');
+   Route::delete('/course_students/{id}/delete', [CourseStudentController::class, 'delete'])->name('course_students.destroy');
+
+
+
+   Route::post('/students/{studentId}/courses', [CourseStudentController::class, 'enrollStudent'])->name('students.courses.enroll');
     Route::delete('/students/{studentId}/courses/{courseId}', [CourseStudentController::class, 'unenrollStudent'])->name('students.courses.unenroll');
     Route::get('/students/{studentId}/courses', [CourseStudentController::class, 'studentCourses'])->name('students.courses.list');
     Route::get('/courses/{courseId}/students', [CourseStudentController::class, 'courseStudents'])->name('courses.students.list');
@@ -496,7 +517,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('students/{student_id}/attendance', [StudentsController::class, 'attendanceReport']);
 
     Route::get('courses/{course_id}/attendance', [CoursesController::class, 'attendanceReport']);
-
     Route::post('attendance/generateReport', [AttendanceController::class, 'generateReport']);
 
 });
