@@ -500,10 +500,22 @@ Route::middleware(['auth'])->group(function () {
    Route::post('/course_students/update_enrollment', [CourseStudentController::class, 'updateEnrollment'])->name('course_students.update_enrollment');
 
 
-   Route::put('course_students/{id}', [CourseStudentController::class, 'update'])->name('course_students.update');
-   Route::get('/course_students/{id}/edit', [CourseStudentController::class, 'edit'])->name('course_students.edit');
-   Route::delete('/course_students/{id}/delete', [CourseStudentController::class, 'delete'])->name('course_students.destroy');
+//    Route::post('course_students', [CourseStudentController::class, 'store'])->name('course_students.store');
+//    Route::put('course_students/{id}', [CourseStudentController::class, 'update'])->name('course_students.update');
+//    Route::get('/course_students/{id}/edit', [CourseStudentController::class, 'edit'])->name('course_students.edit');
+//    Route::delete('/course_students/{id}/delete', [CourseStudentController::class, 'delete'])->name('course_students.destroy');
 
+Route::post('course_students', [CourseStudentController::class, 'store'])->name('course_students.store');
+ Route::put('course_students/{student_id}/{course_id}', [CourseStudentController::class, 'update'])->name('course_students.update');
+Route::put('/course_students/{student_id}/{course_id}', [CourseStudentController::class, 'update']);
+Route::get('course_students/{student_id}/{course_id}/edit', [CourseStudentController::class, 'edit'])->name('course_students.edit');
+Route::delete('course_students/{student_id}/{course_id}/delete', [CourseStudentController::class, 'delete'])->name('course_students.destroy');
+
+
+
+//compisite key
+Route::put('/course_students/{student_id}/{course_id}', [CourseStudentController::class, 'update']);
+Route::get('/course_students/{student_id}/{course_id}/edit', [CourseStudentController::class, 'edit']);
 
 
    Route::post('/students/{studentId}/courses', [CourseStudentController::class, 'enrollStudent'])->name('students.courses.enroll');

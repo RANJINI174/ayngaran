@@ -55,44 +55,68 @@ class CourseStudentController extends Controller
             'message' => 'Course student relationship created successfully!'
         ]);
     }
-    public function edit($id)
+
+    public function edit($student_id, $course_id)
     {
-    try {
-        $course_student = CourseStudent::findOrFail($id); // Use findOrFail to automatically handle if not found
+        $courseStudent = CourseStudent::where('student_id', $student_id)
+                                      ->where('course_id', $course_id)
+                                      ->first();
 
-        return response()->json(['status' => true, 'data' => $course_student], 200);
+        if (!$courseStudent) {
+            return response()->json(['status' => false, 'message' => 'Record not found.']);
+        }
 
-    } catch (\Exception $e) {
-        return response()->json(['status' => false, 'message' => $e->getMessage()], 404);
+        return response()->json(['status' => true, 'data' => $courseStudent]);
     }
-}
 
-public function update(Request $request, $id)
+// public function update(Request $request, $id)
+// {
+//     // Validate the request data
+//     $request->validate([
+//         'edit_student_id' => 'required|exists:students,id',
+//         'edit_course_id' => 'required|exists:courses,id'
+//     ],[
+//         'edit_student_id.required' => 'The student field is required.',
+//         'edit_student_id.exists' => 'The selected student does not exist.',
+//         'edit_course_id.required' => 'The course field is required.',
+//         'edit_course_id.exists' => 'The selected course does not exist.'
+//     ]);
+
+
+//     $update = CourseStudent::where('id', $id)->update([
+//         'student_id' => $request->edit_student_id,
+//         'course_id' => $request->edit_course_id
+//     ]);
+
+//     // Check if the update was successful
+//     if ($update) {
+//         return response()->json(['status' => true, 'message' => 'Enrollment Updated Successfully!'], 200);
+//     }
+
+//     // Return an error response if the update failed
+//     return response()->json(['status' => false, 'message' => 'Enrollment Update Failed!'], 500);
+// }
+public function update(Request $request, $student_id, $course_id)
 {
-    // Validate the request data
-    $request->validate([
+    $validatedData = $request->validate([
         'edit_student_id' => 'required|exists:students,id',
-        'edit_course_id' => 'required|exists:courses,id'
-    ],[
-        'edit_student_id.required' => 'The student field is required.',
-        'edit_student_id.exists' => 'The selected student does not exist.',
-        'edit_course_id.required' => 'The course field is required.',
-        'edit_course_id.exists' => 'The selected course does not exist.'
+        'edit_course_id' => 'required|exists:courses,id',
     ]);
 
+    $courseStudent = CourseStudent::where('student_id', $student_id)
+                                  ->where('course_id', $course_id)
+                                  ->first();
 
-    $update = CourseStudent::where('id', $id)->update([
-        'student_id' => $request->edit_student_id,
-        'course_id' => $request->edit_course_id
-    ]);
-
-    // Check if the update was successful
-    if ($update) {
-        return response()->json(['status' => true, 'message' => 'Enrollment Updated Successfully!'], 200);
+    if (!$courseStudent) {
+        return response()->json(['status' => false, 'message' => 'Record not found.']);
     }
 
-    // Return an error response if the update failed
-    return response()->json(['status' => false, 'message' => 'Enrollment Update Failed!'], 500);
+    $courseStudent->update([
+        'student_id' => $validatedData['edit_student_id'],
+        'course_id' => $validatedData['edit_course_id'],
+    ]);
+
+    return response()->json(['status' => true, 'message' => 'Enrollment updated successfully.']);
 }
     // Enroll a student in a course
     public function enrollStudent(Request $request, $studentId)
