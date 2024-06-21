@@ -188,7 +188,9 @@
                                             @if($delete_check == 1) --}}
                                                 <button class="bg-danger border-0" data-bs-toggle="tooltip"
                                                     data-bs-original-title="Delete" style="border-radius: 5px;"
-                                                    onclick="deleteOrder('{{ $course_student->id }}')"><i><svg
+                                                    {{-- onclick="deleteOrder('{{ $course_student->id }}')"> --}}
+                                                    onclick="deleteOrder('{{ $course_student->student_id }}', '{{ $course_student->course_id }}')">
+                                                    <i><svg
                                                             class="table-delete" xmlns="http://www.w3.org/2000/svg"
                                                             height="16" viewBox="0 0 24 24" width="12">
                                                             <path d="M0 0h24v24H0V0z" fill="none" />
@@ -246,20 +248,15 @@
             });
         });
 
-$(document).ready(function() {
-     $("#Edit_courseStudent_Form").on("submit", function(event) {
-          event.preventDefault();
-        // var student_id = $("#edit_student_id").val();
-        // var course_id = $("#edit_course_id").val();
-        // var formData = $(this).serialize();
-        var compositeKey = $("#course_student_id").val().split('-');
-        var student_id = compositeKey[0];
-        var course_id = compositeKey[1];
+        $(document).ready(function() {
+    $("#Edit_courseStudent_Form").on("submit", function(event) {
+        event.preventDefault();
+        var original_student_id = $("#course_student_id").data("student-id");
+        var original_course_id = $("#course_student_id").data("course-id");
         var formData = $(this).serialize();
 
         $.ajax({
-            // url: '{{ url('/') }}' + "/course_students/" + student_id + "/" + course_id,
-            url: `/course_students/${student_id}/${course_id}`,
+            url: '{{ url('/') }}' + "/course_students/" + original_student_id + "/" + original_course_id,
             method: "PUT",
             data: formData,
             success: function(res) {
@@ -286,25 +283,27 @@ $(document).ready(function() {
     });
 
     window.EditCourseStudentModel = function(student_id, course_id) {
-    $('#Edit_CourseStudent_Model').modal('show');
+        $('#Edit_CourseStudent_Model').modal('show');
 
-    $.ajax({
-        url: `/course_students/${student_id}/${course_id}/edit`,
-        method: "GET",
-        success: function(res) {
-            if (res.status) {
-                $("#edit_student_id").val(res.data.student_id);
-                $("#edit_course_id").val(res.data.course_id);
-                $("#course_student_id").val(`${res.data.student_id}-${res.data.course_id}`);
-            } else {
-                swal("Error!", res.message, "error");
+        $.ajax({
+            url: '{{ url('/') }}' + "/course_students/" + student_id + "/" + course_id + "/edit",
+            method: "GET",
+            success: function(res) {
+                if (res.status) {
+                    $("#edit_student_id").val(res.data.student_id);
+                    $("#edit_course_id").val(res.data.course_id);
+                    // Store original composite key
+                    $("#course_student_id").data("student-id", res.data.student_id);
+                    $("#course_student_id").data("course-id", res.data.course_id);
+                } else {
+                    swal("Error!", res.message, "error");
+                }
+            },
+            error: function(xhr) {
+                swal("Error!", "An error occurred while fetching data.", "error");
             }
-        },
-        error: function(xhr) {
-            swal("Error!", "An error occurred while fetching data.", "error");
-        }
-    });
-};
+        });
+    };
 });
 // $("#Edit_courseStudent_Form").on("submit", function(event) {
 //         event.preventDefault();
@@ -359,10 +358,49 @@ $(document).ready(function() {
 //                 },
 //             });
 //         }
-        function deleteOrder(id) {
+
+
+//         function deleteOrder(id) {
+//     swal({
+//         title: "Are you sure?",
+//         text: "Confirm to delete this CourseStudent?",
+//         type: "warning",
+//         showCancelButton: true,
+//         confirmButtonColor: "#DD6B55",
+//         confirmButtonText: "Delete",
+//         cancelButtonText: "Cancel",
+//         closeOnConfirm: false,
+//         closeOnCancel: true
+//     }, function(isConfirm) {
+//         if (isConfirm) {
+//             var token = $('meta[name="csrf-token"]').attr("content");
+//             $.ajax({
+//                 url: '{{ url("/course_students") }}/' + id + '/delete',
+//                 type: 'DELETE',
+//                 headers: { 'X-CSRF-TOKEN': token },
+//                 success: function(res) {
+//                     if (res.status) {
+//                         swal("Deleted!", "CourseStudent has been deleted.", "success");
+//                         location.reload();
+//                     } else {
+//                         swal("Error!", res.message, "error");
+//                     }
+//                 },
+//                 error: function(xhr, status, error) {
+//                     var errorMessage = xhr.status + ': ' + xhr.statusText;
+//                     swal("Error!", "An error occurred: " + errorMessage, "error");
+//                 }
+//             });
+//         } else {
+//             swal("Cancelled", "Action cancelled", "error");
+//         }
+//     });
+// }
+
+function deleteOrder(student_id, course_id) {
     swal({
         title: "Are you sure?",
-        text: "Confirm to delete this CourseStudent?",
+        text: "Confirm to delete this enrollment?",
         type: "warning",
         showCancelButton: true,
         confirmButtonColor: "#DD6B55",
@@ -374,12 +412,12 @@ $(document).ready(function() {
         if (isConfirm) {
             var token = $('meta[name="csrf-token"]').attr("content");
             $.ajax({
-                url: '{{ url("/course_students") }}/' + id + '/delete',
+                url: '/course_students/' + student_id + '/' + course_id + '/delete',
                 type: 'DELETE',
                 headers: { 'X-CSRF-TOKEN': token },
                 success: function(res) {
                     if (res.status) {
-                        swal("Deleted!", "CourseStudent has been deleted.", "success");
+                        swal("Deleted!", "The enrollment has been deleted.", "success");
                         location.reload();
                     } else {
                         swal("Error!", res.message, "error");
@@ -395,7 +433,6 @@ $(document).ready(function() {
         }
     });
 }
-
 
         function Cancel_CourseStudent() {
             $("#Add_CourseStudentModel").modal("hide");

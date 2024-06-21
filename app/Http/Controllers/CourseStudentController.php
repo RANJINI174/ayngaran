@@ -193,15 +193,21 @@ public function update(Request $request, $student_id, $course_id)
     //     }
     // }
 
-    public function delete($id)
+    public function destroy($student_id, $course_id)
     {
-        $course_student = CourseStudent::find($id);
+        try {
+            $enrollment = CourseStudent::where('student_id', $student_id)
+                ->where('course_id', $course_id)
+                ->first();
 
-        if ($course_student) {
-            $course_student->delete();
-            return response()->json(['status' => 200, 'message' => 'CourseStudent Deleted Successfully!']);
-        } else {
-            return response()->json(['status' => 404, 'message' => 'CourseStudent not found!']);
+            if ($enrollment) {
+                $enrollment->delete();
+                return response()->json(['status' => true, 'message' => 'Enrollment deleted successfully']);
+            } else {
+                return response()->json(['status' => false, 'message' => 'Enrollment not found']);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'message' => $e->getMessage()]);
         }
     }
 }

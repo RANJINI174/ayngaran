@@ -15,6 +15,7 @@ class CreateCourseStudentsTable extends Migration
     {
 
         Schema::create('course_students', function (Blueprint $table) {
+            $table->id(); 
             $table->unsignedBigInteger('student_id');
             $table->unsignedBigInteger('course_id');
             $table->primary(['student_id', 'course_id']);
