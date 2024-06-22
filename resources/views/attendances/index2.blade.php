@@ -119,6 +119,7 @@
 
                     <button class="add_master_btn" data-bs-effect="effect-fall" data-bs-toggle="modal"
                     href="#Add_AttendanceModel"><span><i class="fe fe-plus"></i></span> Add New</button>
+
                     {{-- <button class="add_master_btn" data-bs-effect="effect-fall" data-bs-toggle="modal"
                     href="#Add_AttendanceModel"><span><i class="fe fe-plus"></i></span> report</button> --}}
                     {{-- @php
@@ -134,10 +135,17 @@
 
                 </div>
                 <div class="card-body">
-
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="date">Select Date:</label>
+                            <input type="date" id="date" name="date" class="form-control">
+                        </div>
+                        <button class="btn btn-primary" onclick="fetchAttendance()">Fetch Attendance</button>
+                    </div>
                     <div class="table-responsive">
                         <table id="attendances_table_lists" class="table table-bordered text-nowrap mb-0">
                             <thead class="border-top">
+                                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                                 <tr>
                                     <th class="bg-transparent border-bottom-0 w-5">S.no</th>
                                     <th class="bg-transparent border-bottom-0">Student</th>
@@ -361,5 +369,95 @@ $("#Edit_attendance_Form").on("submit", function(event) {
             $("#Edit_Attendance_Model").modal("hide");
             $(".err").html("");
         }
+//fetch the attendance
+
+    //     function fetchAttendance() {
+    //     var selectedDate = document.getElementById('date').value;
+    //     $.ajax({
+    //         url: "{{ route('attendance.fetch') }}",
+    //         type: "GET",
+    //         data: {
+    //             date: selectedDate
+    //         },
+    //         success: function(response) {
+    //             var attendances = response.attendances;
+    //             var html = '';
+    //             attendances.forEach(function(attendance, index) {
+    //                 html += '<tr>';
+    //                 html += '<td>' + (index + 1) + '</td>';
+    //                 html += '<td>' + attendance.student.name + '</td>';
+    //                 html += '<td>' + attendance.course.name + '</td>';
+    //                 html += '<td>' + attendance.date + '</td>';
+    //                 html += '<td>' + attendance.status + '</td>';
+    //                 html += '</tr>';
+    //             });
+    //             $('#attendanceBody').html(html);
+    //         },
+    //         error: function(xhr) {
+    //             console.log(xhr.responseText);
+    //         }
+    //     });
+    // }
+
+    function fetchAttendance() {
+        var date = document.getElementById('date').value;
+
+        if (!date) {
+            alert('Please select a date.');
+            return;
+        }
+
+        $.ajax({
+            url: '{{ route('attendance.fetch') }}',
+            method: 'GET',
+            data: {
+                date: date
+            },
+            success: function(response) {
+                var attendances = response.attendances;
+                var tbody = '';
+
+                if (attendances.length > 0) {
+                    attendances.forEach(function(attendance, index) {
+                        tbody += '<tr class="border-bottom">' +
+                            '<td class="text-muted fs-12 fw-semibold text-center">' + (index + 1) + '</td>' +
+                            '<td>' + attendance.student.name + '</td>' +
+                            '<td>' + attendance.course.title + '</td>' +
+                            '<td>' + attendance.date + '</td>' +
+                            (attendance.status == 1 ?
+                                '<td class="text-success fs-12 fw-semibold">Active</td>' :
+                                '<td class="text-danger fs-12 fw-semibold">Inactive</td>') +
+                            '<td>' +
+                                '<button class="bg-primary border-0 me-1" data-bs-effect="effect-fall" ' +
+                                    'data-bs-toggle="modal" onclick="return EditAttendanceModel(' + attendance.id + ')" ' +
+                                    'style="border-radius: 5px;">' +
+                                    '<i><svg class="table-edit" xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 0 24 24" width="12">' +
+                                        '<path d="M0 0h24v24H0V0z" fill="none" />' +
+                                        '<path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM5.92 19H5v-.92l9.06-9.06.92.92L5.92 19zM20.71 5.63l-2.34-2.34c-.2-.2-.45-.29-.71-.29s-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83c.39-.39.39-1.02 0-1.41z" />' +
+                                    '</svg></i>' +
+                                '</button>' +
+                                '<button class="bg-danger border-0" data-bs-toggle="tooltip" data-bs-original-title="Delete" ' +
+                                    'style="border-radius: 5px;" onclick="deleteOrder(' + attendance.id + ')">' +
+                                    '<i><svg class="table-delete" xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 0 24 24" width="12">' +
+                                        '<path d="M0 0h24v24H0V0z" fill="none" />' +
+                                        '<path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9zm7.5-5l-1-1h-5l-1 1H5v2h14V4h-3.5z" />' +
+                                    '</svg></i>' +
+                                '</button>' +
+                            '</td>' +
+                        '</tr>';
+                    });
+                } else {
+                    tbody = '<tr><td colspan="6" class="text-center">No data found for the selected date.</td></tr>';
+                }
+
+                document.querySelector('#attendances_table_lists tbody').innerHTML = tbody;
+            },
+            error: function(error) {
+                console.error('Error fetching attendance:', error);
+                alert('An error occurred while fetching attendance.');
+            }
+        });
+    }
+
     </script>
 @endsection

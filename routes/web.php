@@ -483,6 +483,8 @@ Route::middleware(['auth'])->group(function () {
     Route::put('attendances/{id}', [AttendanceController::class, 'update'])->name('attendances.update');
     Route::delete('/attendances/{id}/delete', [AttendanceController::class, 'delete'])->name('attendances.destroy');
 
+    Route::get('/attendances/report', [AttendanceController::class, 'report'])->name('attendances.report');
+Route::get('/attendances/report/{course_id}', [AttendanceController::class, 'reportByCourse'])->name('attendances.report.course');
 
    //CourseStudent
 
@@ -531,5 +533,10 @@ Route::get('/course_students/{student_id}/{course_id}/edit', [CourseStudentContr
 
     Route::get('courses/{course_id}/attendance', [CoursesController::class, 'attendanceReport']);
     Route::post('attendance/generateReport', [AttendanceController::class, 'generateReport']);
+
+    //fetch attendance
+Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
+Route::get('/attendance/fetch', [AttendanceController::class, 'fetchAttendance'])->name('attendance.fetch');
+Route::post('/attendance/store', [AttendanceController::class, 'store'])->name('attendance.store');
 
 });

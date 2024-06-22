@@ -1,347 +1,381 @@
 @extends('layouts.app')
 @section('content')
-    <div class="modal fade" id="Add_AttendanceModel">
-        <div class="modal-dialog modal-dialog-centered text-center" role="document">
-            <div class="modal-content modal-content-demo">
-                <div class="modal-header">
-                    <h6 class="modal-title">Add Attendance</h6><button aria-label="Close" class="btn-close"
-                        data-bs-dismiss="modal"><span aria-hidden="true">&times;</span></button>
-                  </div>
-                <div class="modal-body">
-                    {{-- <form id="Add_supplierForm" autocomplete="off"> --}}
-                    <form id="Add_attendanceForm" action="{{ route('attendances.store') }}" method="POST">
-                        @csrf
-                        {{-- @method('POST') --}}
-                        <div class="form-group">
-                            <select name="student_id" id="student_id" class="form-control">
-                                <option value="" disabled selected>Select Student</option>
-                                @foreach($students as $student)
-                                    <option value="{{ $student->id }}">{{ $student->name }}</option>
-                                @endforeach
-                            </select>
-                            <div class="text-start text-danger student_id"></div>
-                        </div>
-
-                        <div class="form-group">
-                            <select name="course_id" id="course_id" class="form-control">
-                                <option value="" disabled selected>Select Course</option>
-                                @foreach($courses as $course)
-                                    <option value="{{ $course->id }}">{{ $course->title }}</option>
-                                @endforeach
-                            </select>
-                            <div class="text-start text-danger course_id"></div>
-                        </div>
-
-                        <div class="form-group">
-                            <input type="date" class="form-control" id="date" name="date">
-                            <div class="text-start text-danger date"></div>
-                        </div>
-                        <div class="form-group">
-                            <select name="status" id="status" class="form-control">
-                                <option value="1">Present</option>
-                                <option value="0">Absent</option>
-                            </select>
-                            <div class="text-start text-danger status"></div>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-end">
-                            <button class="btn btn-primary m-1">Add</button>
-                            <!-- <a class="btn btn-light" data-bs-dismiss="modal">Close</a> -->
-                            <a class="btn btn-light" onclick="Cancel_Attendance()">Close</a>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    {{-- Edit Attendance --}}
-
-    <div class="modal fade" id="Edit_Attendance_Model">
-        <div class="modal-dialog modal-dialog-centered text-center" role="document">
-            <div class="modal-content modal-content-demo">
-                <div class="modal-header">
-                    <h6 class="modal-title">Edit Attendance</h6>
-                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="Edit_attendance_Form" autocomplete="off">
-                        @csrf
-                        @method('PUT')
-                        <div class="form-group">
-                            <input type="hidden" id="attendance_id" name="attendance_id">
-                            <select name="student_id" id="edit_student_id" class="form-control">
-                                <option value="" disabled selected>Select Student</option>
-                                @foreach($students as $student)
-                                    <option value="{{ $student->id }}">{{ $student->name }}</option>
-                                @endforeach
-                            </select>
-                            <div class="text-start text-danger edit_student_id"></div>
-                        </div>
-
-                        <div class="form-group">
-                            <select name="course_id" id="edit_course_id" class="form-control">
-                                <option value="" disabled selected>Select Course</option>
-                                @foreach($courses as $course)
-                                    <option value="{{ $course->id }}">{{ $course->title }}</option>
-                                @endforeach
-                            </select>
-                            <div class="text-start text-danger edit_course_id"></div>
-                        </div>
-
-                        <div class="form-group">
-                            <input type="date" class="form-control" id="edit_date" name="date">
-                            <div class="text-start text-danger edit_date"></div>
-                        </div>
-
-                        <div class="form-group">
-                            <select name="status" id="edit_status" class="form-control form-select">
-                                <option value="1">Present</option>
-                                <option value="0">Absent</option>
-                            </select>
-                            <div class="text-start text-danger status"></div>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-end">
-                            <button class="btn btn-primary m-1">Update</button>
-                            <a class="btn btn-light" data-bs-dismiss="modal">Close</a>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- ROW-5 -->
-    <div class="row row-sm mt-2">
+    <div class="row mt-2">
         <div class="col-12 col-sm-12">
-            <div class="card ">
-                <div class="card-header  d-flex align-items-center justify-content-between">
-                    <h3 class="card-title mb-0">Attendances</h3>
-                    <button class="add_master_btn" data-bs-effect="effect-fall" data-bs-toggle="modal"
-                    href="#Add_AttendanceModel"><span><i class="fe fe-plus"></i></span> Add New</button>
-                    {{-- @php
-                        $permission = new \App\Models\Permission();
-                        $create_check = $permission->checkPermission('vehicles.create');
-                    @endphp
-                    @if ($create_check == 1)
-                    <button class="add_master_btn" data-bs-effect="effect-fall" data-bs-toggle="modal"
-                        href="#Add_SupplierModel"><span>
-                            <i class="fe fe-plus"></i>
-                        </span> Add New</button>
-                    @endif --}}
-
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">course student Attendance</h3>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table id="attendances_table_lists" class="table table-bordered text-nowrap mb-0">
-                            <thead class="border-top">
-                                <tr>
-                                    <th class="bg-transparent border-bottom-0 w-5">S.no</th>
-                                    <th class="bg-transparent border-bottom-0">Student</th>
-                                    <th class="bg-transparent border-bottom-0">Course</th>
-                                    <th class="bg-transparent border-bottom-0">Date</th>
-                                    <th class="bg-transparent border-bottom-0">Status</th>
-                                    <th class="bg-transparent border-bottom-0">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (isset($attendances))
-                                    @php $i = 1; @endphp
-                                    @foreach ($attendances as $attendance)
-                                        <tr class="border-bottom">
-                                            <td class="text-muted fs-12 fw-semibold text-center">{{ $i++ }}
-                                            </td>
-                                            <td>{{ $attendance->student->name }}</td>
-                                            <td>{{ $attendance->course->title }}</td>
-                                            <td>{{ $attendance->date }}</td>
-                                            @if ($attendance->status == 1)
-                                                <td class="text-success fs-12 fw-semibold">Active</td>
-                                            @else
-                                                <td class="text-danger fs-12 fw-semibold">Inactive</td>
-                                            @endif
-                                            <td class="">
-                                             {{-- @php
-                                                $permission = new \App\Models\Permission();
-                                                $edit_check = $permission->checkPermission('suppliers.edit');
-                                            @endphp
-                                            @if($edit_check == 1) --}}
-                                                <button class="bg-primary border-0 me-1" data-bs-effect="effect-fall"
-                                                    data-bs-toggle="modal"
-                                                    onclick="return EditAttendanceModel({{ $attendance->id }})"
-                                                    style="border-radius: 5px;">
+                    <div class="container">
 
-                                                    <i><svg class="table-edit" xmlns="http://www.w3.org/2000/svg"
-                                                            height="16" viewBox="0 0 24 24" width="12">
-                                                            <path d="M0 0h24v24H0V0z" fill="none" />
-                                                            <path
-                                                                d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM5.92 19H5v-.92l9.06-9.06.92.92L5.92 19zM20.71 5.63l-2.34-2.34c-.2-.2-.45-.29-.71-.29s-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83c.39-.39.39-1.02 0-1.41z" />
-                                                        </svg></i>
-                                                </button>
-                                            {{-- @endif --}}
+                        <div class="row mt-2">
+                            <div class="col-12">
+                                <h5 class="fw-bold mt-1" style="color: #6259ca; text-align:center;">students Details</h5>
+                            </div>
+                        </div>
+                        <?php
+                        $student_id = Request::input('student_id');
+                        $course_id = Request::input('course_no');    //doubt
+                        ?>
+                        <?php
+                            $status =Request::input('status');
+                            ?>
+                        <form id="attendance_list" autocomplete="off" url="{{ route('attendances') }}">
 
-                                            {{-- @php
-                                                $permission = new \App\Models\Permission();
-                                                $delete_check = $permission->checkPermission('suppliers.delete');
-                                            @endphp
-                                            @if($delete_check == 1) --}}
-                                                <button class="bg-danger border-0" data-bs-toggle="tooltip"
-                                                    data-bs-original-title="Delete" style="border-radius: 5px;"
-                                                    onclick="deleteOrder('{{ $attendance->id }}')"><i><svg
-                                                            class="table-delete" xmlns="http://www.w3.org/2000/svg"
-                                                            height="16" viewBox="0 0 24 24" width="12">
-                                                            <path d="M0 0h24v24H0V0z" fill="none" />
-                                                            <path
-                                                                d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9zm7.5-5l-1-1h-5l-1 1H5v2h14V4h-3.5z" />
-                                                        </svg></i></button>
-                                            {{-- @endif --}}
-                                            </td>
+                            <div class="row p-2" style="border-radius:5px; border:1px solid #212326ad;">
+                                <div class="col-sm-6 col-md-3 mb-2">
+                                    <label class="form-label">student Name </label>
+                                    <select name="project_id" id="project_id" class="form-control SlectBox"
+                                        onchange="attendance_filter()">
+                                        <option value="">Select student</option>
+                                        @if (isset($students))
+                                            @foreach ($students as $student)
+                                                <option value="{{ $student->id }}"
+                                                    @if ($student_id == $student->id) {{ 'selected' }} @endif>
+                                                    {{ $student->student_name }}
+                                                </option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                </div>
+                                <div class="col-sm-6 col-md-3 mb-2">
+                                    <label class="form-label">course</label>
+                                    <select name="plot_no" id="plot_no" class="form-control SlectBox" onchange="Reg_com_update_filter()">
+                                        <option value="">Select Plot No</option>
+                                        @if (isset($courses))
+                                            @foreach ($courses as $course)
+                                                <option value="{{ $course->id }}"
+                                                    @if ($courses_id == $course->id) {{ 'selected' }} @endif>
+                                                    {{ $course->title }}</option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                    <span id="plot_no_validation" class="text-danger" style="display:none;">Plot
+                                        No Field is Required</span>
+                                </div>
 
-                                        </tr>
-                                    @endforeach
-                                @endif
-                            </tbody>
-                        </table>
+                                 <div class="col-sm-6 col-md-3 mb-2">
+                                <label class="form-label">Status </label>
+                                <div class="input-group">
+                                   <select name="status" id="status" class="form-control SlectBox" onchange="Reg_com_update_filter()">
+                                       <option value="">All</option>
+                                       <option value="1"  <?php if($status == 1){ echo  "selected"; } ?> >Completed </option>
+                                       <option value="2" <?php if($status == 2){ echo  "selected"; } ?> >Pending </option>
+                                    </select>
+                                </div>
+
+                            </div>
+                                <div class="col-sm-6 col-md-3 mb-2">
+                                    <label class="form-label" style="color:white;">.</label>
+                                    <button type="button" class="btn btn-primary"
+                                        onclick="Reg_com_update_filter()">Search</button>
+                                </div>
+                            </div>
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h5 class="fw-bold" style="color: #6259ca; text-align:center;">students List</h5>
+                                </div>
+                            </div>
+                        </form>
+                        <form id="Add_attendance_Form" autocomplete="off">
+                            @csrf
+                            @method('POST')
+                            <div class="row p-2" style="border-radius:5px; border:1px solid #212326ad;">
+                                <div class="col-12">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <input type="hidden" id="store_url"
+                                                value="{{ route('registration_com_update_store') }}">
+                                            <label for="register_date" class="form-label mt-0">Reg. Date</label>
+                                            <input type="date" name="register_date" id="register_date"
+                                                class="form-control" value="{{ date('Y-m-d') }}">
+
+                                            <span id="register_date_validation" class="text-danger"
+                                                style="display:none;">Register Date
+                                                is Required</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 mt-4">
+                                    <div class="table-responsive">
+                                        <table id="plot_expense_lists" class="table table-bordered text-nowrap mb-0">
+                                            <thead class="border text-center">
+                                                <tr>
+                                                    <th class="bg-transparent border-bottom-0 w-5">S.no</th>
+                                                   <th class="bg-transparent border-bottom-0">Student</th>
+                                                   <th class="bg-transparent border-bottom-0">Course</th>
+                                                   <th class="bg-transparent border-bottom-0">Date</th>
+                                                   <th class="bg-transparent border-bottom-0">Status</th>
+                                                   <th class="bg-transparent border-bottom-0">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="table_tbody_row" class="border">
+
+                                                @if (count($list) > 0)
+                                                    <?php
+                                                    $i = 1;
+                                                    ?>
+                                                    @foreach ($list as $val)
+                                                    <?php
+                                                    if($val->register_status == 1){
+
+                                                        $status = "Completed";
+                                                    }else{
+                                                        $status = "Pending";
+                                                    }
+
+
+                                                     if(isset($val->customer_id))
+                                                     {
+                                                      $get_customer = \App\Models\Booking::where('id',$val->customer_id)->first();
+                                                       $customer_name = $get_customer->customer_name;
+                                                         $customer_mobile = $get_customer->mobile;
+                                                     }else{
+                                                         $customer_name = $val->customer_name;
+                                                         $customer_mobile = $val->mobile;
+                                                     }
+                                                    ?>
+                                                        <tr class="tr_row">
+                                                            <td style="vertical-align: middle;">{{ $i++ }}</td>
+                                                            <td style="vertical-align: middle;">{{ $val->short_name }}</td>
+                                                            <td style="vertical-align: middle;">{{ $val->plot_no }}</td>
+                                                            <td style="vertical-align: middle;">{{ $customer_name }}
+                                                            </td>
+                                                            <td style="vertical-align: middle;">{{ $customer_mobile }}</td>
+                                                            <td style="vertical-align: middle;">
+                                                                {{ date('d-m-Y', strtotime($val->receipt_date)) }}</td>
+                                                            @php
+                                                                $paid_date = \App\Models\Payment::where('project_id', $val->n_project_id)
+                                                                    ->where('plot_id', $val->n_plot_id)
+                                                                    ->orderby('id', 'desc')
+                                                                    ->first();
+                                                            @endphp
+                                                            @if (isset($paid_date))
+                                                                <td style="vertical-align: middle;">
+                                                                    {{ date('d-m-Y', strtotime($paid_date->receipt_date)) }}
+                                                                </td>
+                                                            @else
+                                                                <td style="vertical-align: middle;">
+                                                                    {{ date('d-m-Y', strtotime($val->receipt_date)) }}</td>
+                                                            @endif
+                                                            <td class="text-success" style="vertical-align: middle;"><input
+                                                                    type="hidden" id="plot_sq_ft_{{ $val->booking_id }}_1"
+                                                                    class="plot_sq_ft"
+                                                                    value="{{ $val->plot_sq_ft }}">{{ $val->plot_sq_ft }}
+                                                            </td>
+                                                            <?php
+                                                            if(isset($val->new_update_gl_val))
+                                                            {
+                                                                $gl_value = $val->new_update_gl_val;
+                                                            }else{
+                                                                $gl_value = $val->guide_line_sq_ft;
+                                                            }
+                                                            ?>
+                                                            <td>
+                                                                <input type="text" class="form-control gl_val"
+                                                                    value="{{ $gl_value }}">
+                                                            </td>
+
+                                                            <td>
+                                                            <h6 class="fs-14 fw-bold text-end pt-2 text-success">{{ $status }}</h6>
+                                                           </td>
+
+                                                            <td><label class="custom-control custom-checkbox mt-2"><input
+                                                                        name="selected_val[]"
+                                                                        class="custom-control-input selected_val"
+                                                                        id="selected_val_{{ $val->booking_id }}_1"
+                                                                        type="checkbox"  <?php if($val->register_status == 1){?> disabled  checked <?php } ?>
+                                                                        onclick="isCheckedById({{ $val->booking_id }})"
+                                                                        value="{{ $val->booking_id }}"
+                                                                        data-gl_value="{{ $val->guide_line_sq_ft }}"
+                                                                        data-plot_id="{{ $val->n_plot_id }}"><span
+                                                                        class="custom-control-label "> </span></label></td>
+                                                        </tr>
+                                                    @endforeach
+                                                @else
+                                                    <td colspan="11" class="text-center">Data No Found</td>
+                                                @endif
+
+                                                <tr>
+                                                    <td colspan="7">
+                                                        <h6 class="text-end fw-bold text-danger">Total :</h6>
+                                                    </td>
+                                                    <td colspan="4"><input type="text" name="total_plot_sqft"
+                                                            id="total_plot_sqft" class="form-control"
+                                                            style="width: 90px;" readonly>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan='7'>
+                                                        <h6 class='text-end text-danger fw-bold'>Selected(<span
+                                                                id='change_count'>0</span>) : </h6>
+                                                        <input type='hidden' id='sel_count_r' value='0'>
+
+                                                    </td>
+                                                    <td colspan="4"><input text='text' id='select_plot_sqft'
+                                                            class='form-control' value='0' style="width: 90px;" readonly>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 my-2 d-flex align-items-center justify-content-end">
+
+                                    <button type="submit" class="btn btn-primary me-2 con_sub_btn"
+                                        disabled>Complete</button>
+                                    <!-- <a class="btn btn-light" href="#">Cancel</a> -->
+
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
-        </div><!-- COL END -->
-    </div><!-- ROW-5 END -->
+        </div>
+    </div>
 @endsection
-
 @section('scripts')
     <script>
-        $(document).ready(function() {
-            var table = $('#attendances_table_lists').DataTable();
-            $("#status").select2({
-                width: "100%",
+        function attendance_filter() {
+            $("#attendance_list").submit();
+        }
+
+
+        var plot_sq_ft = 0;
+        $(".plot_sq_ft").each(function() { // commission amount
+            var plot_sq_ft_rows = $(this).val();
+            var plot_sq_ft_values = parseFloat(plot_sq_ft_rows);
+            plot_sq_ft += plot_sq_ft_values;
+        });
+        var tot_plot_sq_ft = plot_sq_ft.toFixed(2);
+        $("#total_plot_sqft").val(tot_plot_sq_ft);
+
+        function isCheckedById(id) {
+
+            if ($("#selected_val_" + id + '_' + 1).is(":checked")) {
+                var sno = 1;
+                var c = parseFloat($("#sel_count_r").val()) || 0;
+                var tot_sel = sno + c;
+                $("#sel_count_r").val(tot_sel);
+                $("#change_count").text(tot_sel);
+
+                var val = parseFloat($("#selected_val" + id + '_' + 1).val()) || 0;
+
+                if ($("#sel_count_r").val() != 0) {
+                    $(".con_sub_btn").attr("disabled", false);
+                } else {
+                    alert("else");
+                    $(".con_sub_btn").attr("disabled", true);
+                }
+            } else {
+                var sno = 1;
+                var c = parseFloat($("#sel_count_r").val()) || 0;
+                var tot_sel = c - sno;
+                $("#sel_count_r").val(tot_sel);
+                $("#change_count").text(tot_sel);
+                $("#selected_val" + id + '_' + 1).val()
+
+                if ($("#sel_count_r").val() == 0) {
+                    $(".con_sub_btn").attr("disabled", true);
+                }
+            }
+
+            if ($("#selected_val_" + id + '_' + 1).is(":checked")) {
+                var sel_sq_val = parseFloat($("#select_plot_sqft").val()) || 0; // sq ft
+                var sq_val = parseFloat($("#plot_sq_ft_" + id + "_1").val()) || 0;
+                var sq_t = sel_sq_val + sq_val;
+                var sq_tot = sq_t.toFixed(2);
+                $("#select_plot_sqft").val(sq_tot);
+            } else {
+                var sel_sq_val = parseFloat($("#select_plot_sqft").val()) || 0; // sq ft
+                var sq_val = parseFloat($("#plot_sq_ft_" + id + "_1").val()) || 0;
+                var sq_t = Number(sel_sq_val) - Number(sq_val);
+                var sq_tot = sq_t.toFixed(2);
+                $("#select_plot_sqft").val(sq_tot);
+            }
+        }
+
+        // get the plot_nos
+        function PlotNoView() {
+            var project_id = $("#project_id").val();
+            var url = "{{ url('/') }}/registration-completed-get-plots";
+            $("#plot_no").html("<option value=''>Select Plot No</option>");
+            if (project_id != "") {
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    data: {
+                        project_id: project_id,
+                    },
+                    success: function(res) {
+                        if (res.status == true) {
+                            if (res.plot_nos.length > 0) {
+                                $.each(res.plot_nos, function(key, value) {
+                                    $("#plot_no").append('<option value="' + value
+                                        .plot_id +
+                                        '">' +
+                                        value.plot_no + '</option>')
+                                });
+                            } else {
+                                $("#plot_no").html(
+                                    "<option value=''>Select Plot No</option><option value=''>No Data Found</option>"
+                                );
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        $("#Add_RegistrationComUpdate_Form").submit(function(e) {
+            e.preventDefault();
+            var optionsChecked = [];
+            var plot_ids = [];
+            var gl_values = [];
+            var c = 0;
+            $('.selected_val:checkbox:checked').each(function() {
+                optionsChecked.push($(this).val());
+                plot_ids.push($(this).data('plot_id'));
+                c++;
+                var gl_val = $(this).closest(".tr_row").find(".gl_val").val();
+                // var gl_val = $("#guide_line_1_" + c).val();
+                gl_values.push(gl_val);
+
             });
-            $("#edit_status").select2({
-                width: "100%",
+            var form = $("#Add_RegistrationComUpdate_Form")[0];
+            var url = $("#store_url").val();
+            var redirect = "{{ url('/') }}/registration-completed-updated";
+            var formData = new FormData(form);
+            formData.append('book_up_id', optionsChecked);
+            formData.append('plot_id', plot_ids);
+            formData.append('gl_value', gl_values);
+
+            $.ajax({
+                url: url,
+                method: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(data) {
+                    if (data.status == true) {
+                        swal("Created!", data.message, "success");
+                        setTimeout(function() {
+                            window.location.href = redirect;
+                        }, 2000);
+                    }
+                },
+                error: function(xhr) {
+                    $(".err").html("");
+                    $.each(xhr.responseJSON.errors, function(key, value) {
+                        $("." + key).append(
+                            '<div class="err text-danger">' + value + "</div>"
+                        );
+                    });
+                },
             });
         });
-        $('#Add_attendanceForm').on('submit', function(e) {
-                e.preventDefault();
-
-                $.ajax({
-                    url: $(this).attr('action'),
-                    method: $(this).attr('method'),
-                    data: $(this).serialize(),
-                    success: function(response) {
-                        if (response.status) {
-                             alert('Attendance added successfully!');
-                            // Optionally, reload the table or page to show the new data
-                            // table.ajax.reload(); // Reload the DataTable
-                        } else {
-                            alert('Failed to add attendance!');
-                        }
-                    },
-                    error: function(xhr) {
-                        alert('An error occurred: ' + xhr.status + ' ' + xhr.statusText);
-                    }
-                });
-            });
-//edit attendance
-            function EditAttendanceModel(id) {
-    $('#Edit_Attendance_Model').modal('show');
-
-    $.ajax({
-        url: '{{ url('/') }}' + "/attendances/" + id + "/edit",
-        method: "GET",
-        data: { id: id },
-        success: function(res) {
-            $("#edit_student_id").val(res.data.student_id);
-            $("#edit_course_id").val(res.data.course_id);
-            $("#edit_date").val(res.data.date);
-            $("#edit_status").val(res.data.status).trigger("change");
-            $("#attendance_id").val(res.data.id);
-        },
-        error: function(xhr) {
-            alert('An error occurred: ' + xhr.status + ' ' + xhr.statusText);
-        }
-    });
-}
-
-// Update Attendance
-$('#Edit_attendance_Form').on('submit', function(e) {
-    e.preventDefault();
-
-    var formData = $(this).serialize();
-
-    $.ajax({
-        url: '{{ url('attendances') }}/' + $("#attendance_id").val(),
-        method: 'PUT',
-        data: formData,
-        success: function(response) {
-            if (response.status) {
-                alert('Attendance updated successfully!');
-                $('#Edit_Attendance_Model').modal('hide');
-                location.reload(); // Reload the page
-            } else {
-                alert('Failed to update attendance!');
-            }
-        },
-        error: function(xhr) {
-            alert('An error occurred: ' + xhr.status + ' ' + xhr.statusText);
-        }
-    });
-});
-
- function deleteOrder(id) {
-            swal({
-                    title: "Are you sure?",
-                    text: "Confirm to delete this Attendance?",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#DD6B55",
-                    confirmButtonText: "Delete",
-                    cancelButtonText: "Cancel",
-                    closeOnConfirm: false,
-                    closeOnCancel: true
-                },
-                function(isConfirm) {
-                    if (isConfirm) {
-                        var redirect = $('meta[name="base_url"]').attr('content') + '/attendances';
-                        var token = $('meta[name="csrf-token"]').attr("content");
-                        var formData = new FormData();
-                        formData.append("_token", "{{ csrf_token() }}");
-                        formData.append("id", id);
-                        $.ajax({
-                            url: '{{ url('/') }}' + "/attendances/" + id + "/delete",
-                            data: formData,
-                            data: {
-                    _token: "{{ csrf_token() }}", // Include CSRF token
-                    id: id
-                },
-                            type: 'DELETE',
-                            contentType: false,
-                            processData: false,
-                            dataType: "json",
-                            success: function(res) {
-                                if (res) {
-                                    swal("Deleted!", "Attendance has been deleted.", "success");
-                                    window.location.href = redirect;
-
-                                } else {
-                                    swal("attendance Delete Failed", "Please try again. :)",
-                                        "error");
-                                }
-                            }
-                        });
-
-                    } else {
-                        swal("Cancelled", "Cancelled", "error");
-                    }
-                });
-        }
-
-        function Cancel_Attendance() {
-            $("#Add_AttendanceModel").modal("hide");
-            $("#Add_attendanceForm")[0].reset();
-            $(".err").html("");
-        }
-
-        function Cancel_edit_ledger() {
-            $("#Edit_Attendance_Model").modal("hide");
-            $(".err").html("");
-        }
     </script>
 @endsection

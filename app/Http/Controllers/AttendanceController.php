@@ -86,7 +86,7 @@ class AttendanceController extends Controller
         } catch (\Exception $e) {
             return response()->json(['status' => false, 'message' => $e->getMessage()], 404);
         }
-    }   
+    }
 
     // public function update(Request $request, $id)
     // {
@@ -166,8 +166,43 @@ class AttendanceController extends Controller
         }
     }
 
-    public function generateReport()
+    public function generateReport(Request $request)
     {
-        // Implement your report generation logic here
+        $request->validate([
+            'course_id' => 'required|exists:courses,id',
+        ]);
+
+        $course = Course::findOrFail($request->course_id);
+        $attendances = Attendance::where('course_id', $course->id)->orderBy('date')->get();
+
+        return view('attendance.report', compact('course', 'attendances'));
+    }
+
+    // public function fetchAttendance(Request $request)
+    // {
+    //     $date = $request->date;
+    //     $attendances = Attendance::whereDate('date', $date)->get();
+
+    //     return response()->json(['attendances' => $attendances]);
+    // }
+    public function fetchAttendance(Request $request)
+{
+    $date = $request->date;
+    $attendances = Attendance::whereDate('date', $date)
+        ->with(['student', 'course'])
+        ->get();
+
+    return response()->json(['attendances' => $attendances]);
+}
+    public function report()
+    {
+        $courses = Course::with('attendances')->get();
+        return view('attendances.report', compact('courses'));
+    }
+
+    public function reportByCourse($course_id)
+    {
+        $course = Course::with('attendances.student')->findOrFail($course_id);
+        return view('attendances.report_course', compact('course'));
     }
 }
