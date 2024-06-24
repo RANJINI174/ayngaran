@@ -6,34 +6,116 @@ use App\Models\Attendance;
 use App\Models\Course;
 use App\Models\Student;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class AttendanceController extends Controller
 {
-    public function index()
-    {
-        $attendances = Attendance::with('student', 'course')->get();
-        $students = Student::all();
-        $courses = Course::all();
-        return view('attendances.index', compact('attendances', 'students', 'courses'));
-    }
-    public function create()
-    {
-        $students = Student::all();
-        $courses = Course::all();
-        return view('attendances.create', compact('students', 'courses'));
-    }
+    // public function index()
+    // {
+    //     $attendances = Attendance::with('student', 'course')->get();
+    //     $students = Student::all();
+    //     $courses = Course::all();
+    //     return view('attendances.index', compact('attendances', 'students', 'courses'));
+    // }
 
+
+//date wise fetch the data
+
+    public function index(Request $request)
+    {
+        $attendances = Attendance::query();
+        $students = Student::all();
+        $courses = Course::all();
+        if ($request->has('date')) {
+            $attendances->whereDate('date', $request->date);
+        }
+        if ($request->has('course_id')) {
+                  $attendances->where('course_id', $request->input('course_id'));
+        }
+
+
+        $attendances = $attendances->get();
+
+        return view('attendances.index', compact('attendances','students','courses'));
+    }
+    //course only correct
+//     public function index(Request $request)
+// {
+//     $query = Attendance::query();
+
+//     if ($request->has('course_id')) {
+//         $query->where('course_id', $request->input('course_id'));
+//     }
+
+//     $attendances = $query->with(['student', 'course'])->paginate(10);
+//     $courses = Course::all();
+//     $students = Student::all();
+
+
+
+//     return view('attendances.index', compact('attendances', 'courses', 'students'));
+// }
+
+// public function index(Request $request)
+// {
+//     // Initialize the Attendance query
+//     $query = Attendance::query();
+
+//     // Filter by course_id if provided
+//     if ($request->has('course_id')) {
+//         $query->whereHas('student.courses', function ($query) use ($request) {
+//             $query->where('course_id', $request->course_id);
+//         });
+//     }
+
+//     // Filter by date if provided
+//     if ($request->has('date')) {
+//         $query->whereDate('date', $request->date);
+//     }
+
+//     // Load the related student and course data and paginate the results
+//     $attendances = $query->with(['student', 'student.courses'])->paginate(10);
+
+//     // Fetch all courses and students
+//     $courses = Course::all();
+//     $students = Student::all();
+
+//     // Return the view with the filtered attendances, courses, and students
+//     return view('attendances.index', compact('attendances', 'students', 'courses'));
+// }
+
+public function updateStatus(Request $request)
+{
+    $attendance = Attendance::find($request->id);
+    $attendance->status = $request->status;
+    $attendance->save();
+
+    return response()->json(['success' => true]);
+}
+
+    // public function create()
+    // {
+    //     $students = Student::all();
+    //     $courses = Course::all();
+    //     return view('attendances.create', compact('students', 'courses'));
+    // }
+
+    //fetch the data
+
+    // public function create(Request $request)
+    // {
+    //     $courses = Course::all();
+    //     $students = collect(); // empty collection by default
+
+    //     if ($request->has('course_id') && $request->has('date')) {
+    //         $students = Student::where('course_id', $request->course_id)->get();
+    //     }
+
+    //     return view('attendances.create', compact('courses', 'students', 'request'));
+    // }
     public function store(Request $request)
     {
-        // $request->validate([
-        //     'student_id' => 'required',
-        //     'course_id' => 'required',
-        //     'date' => 'required|date',
-        //     'status' => 'required'
-        // ]);
 
-        // Attendance::create($request->all());
-        // return redirect()->route('attendances.index')->with('success', 'Attendance recorded successfully.');
         $validatedData = $request->validate([
             'student_id' => 'required|exists:students,id',
             'course_id' => 'required|exists:courses,id',
@@ -50,6 +132,31 @@ class AttendanceController extends Controller
             return response()->json(['status' => false, 'message' => 'Failed to add attendance!'], 500);
         }
     }
+    // public function store(Request $request)
+    // {
+    //     $validatedData = $request->validate([
+    //         'course_id' => 'required|exists:courses,id',
+    //         'date' => 'required|date',
+    //         'attendance' => 'required|array',
+    //         'attendance.*.student_id' => 'required|exists:students,id',
+    //         'attendance.*.status' => 'required|boolean',
+    //     ]);
+
+    //     foreach ($validatedData['attendance'] as $attendanceData) {
+    //         Attendance::updateOrCreate(
+    //             [
+    //                 'student_id' => $attendanceData['student_id'],
+    //                 'course_id' => $validatedData['course_id'],
+    //                 'date' => $validatedData['date'],
+    //             ],
+    //             [
+    //                 'status' => $attendanceData['status'],
+    //             ]
+    //         );
+    //     }
+
+    //     return redirect()->route('attendance.create')->with('success', 'Attendance recorded successfully.');
+    // }
 
     public function show($id)
     {

@@ -2,111 +2,207 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Attendance;
+use App\Models\Course;
 use App\Models\Student;
-use App\Models\Permission;
+use Illuminate\Http\Request;
 
-class StudentsController extends Controller
+class AttendanceController extends Controller
 {
     public function index()
     {
-        $students = Student::all(); // or use any other method to fetch data
-    // return view('suppliers.index', compact('suppliers'));
-    // return view('students.index', ['students' => $students]);
-    return view('students.index', compact('students'));
-
+        $attendances = Attendance::with('student', 'course')->get();
+        $students = Student::all();
+        $courses = Course::all();
+        return view('attendances.index', compact('attendances', 'students', 'courses'));
     }
     public function create()
     {
-        return view('students.create');
+        $students = Student::all();
+        $courses = Course::all();
+        return view('attendances.create', compact('students', 'courses'));
     }
-
-
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required',
-            'status' => 'required'
-         ]);
+        // $request->validate([
+        //     'student_id' => 'required',
+        //     'course_id' => 'required',
+        //     'date' => 'required|date',
+        //     'status' => 'required'
+        // ]);
 
-        $students = new Student();
-        $students->name = $request->name;
-        $students->email = $request->email;
-        $students->status = $request->status;
-        $insert = $students->save();
-        if ($insert) {
-            return response()->json(['status' => true, 'message' => 'Student Created Successfully!'], 200);
+        // Attendance::create($request->all());
+        // return redirect()->route('attendances.index')->with('success', 'Attendance recorded successfully.');
+        $validatedData = $request->validate([
+            'student_id' => 'required|exists:students,id',
+            'course_id' => 'required|exists:courses,id',
+            'date' => 'required|date',
+            'status' => 'required|boolean',
+        ]);
+
+        try {
+            $attendance = new Attendance($validatedData);
+            $attendance->save();
+
+            return response()->json(['status' => true, 'message' => 'Attendance added successfully!'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'message' => 'Failed to add attendance!'], 500);
         }
-        return response()->json(['status' => false, 'message' => 'Student Created Failed!']);
+    }
 
+    public function show($id)
+    {
+        $attendance = Attendance::with('student', 'course')->findOrFail($id);
+        return view('attendances.show', compact('attendance'));
     }
 
     public function edit($id)
     {
-
-        // try {
-        //     if (!empty($id)) {
-        //         $student = Student::where('id', $id)->first();
-        //         if ($student != null) {
-        //             return response()->json(['status' => true, 'data' => $student], 200);
-        //             // return view('edit_supplier', ['supplier' => $supplier]);
-        //         } else {
-        //             return response()->json(['data' => 'Student Not Found']);
-        //         }
-        //     } else {
-        //         return response()->json(['data' => 'Student Not Found']);
-        //     }
-        // } catch (\Exception $e) {
-        //     return back()->with(['error' => $e->getMessage()])->withInput();
-        // }
+        // $attendance = Attendance::findOrFail($id);
+        // $students = Student::all();
+        // $courses = Course::all();
+        // return view('attendances.edit', compact('attendance', 'students', 'courses'));
 
         try {
-            $student = Student::findOrFail($id); // Use findOrFail to automatically handle if not found
+             $attendance = Attendance::findOrFail($id); // Use findOrFail to automatically handle if not found
+            $students = Student::all();
+            $courses = Course::all();
+            // return response()->json(['status' => true, 'data' => $course,$students,$attendance], 200);
+            return response()->json([
+                'status' => true,
+                'data' => [
+                    'student_id' => $attendance->student_id,
+                    'course_id' => $attendance->course_id,
+                    'date' => $attendance->date,
+                    'status' => $attendance->status,
+                    'id' => $attendance->id
+                ],
+                'students' => $students,
+                'courses' => $courses
+            ], 200);
 
-            return response()->json(['status' => true, 'data' => $student], 200);
 
         } catch (\Exception $e) {
             return response()->json(['status' => false, 'message' => $e->getMessage()], 404);
         }
     }
 
+    // public function update(Request $request, $id)
+    // {
+    //     $request->validate([
+    //         'student_id' => 'required',
+    //         'course_id' => 'required',
+    //         'date' => 'required|date',
+    //         'status' => 'required'
+    //     ]);
 
+    //     $attendance = Attendance::findOrFail($id);
+    //     $attendance->update($request->all());
+    //     return redirect()->route('attendances.index')->with('success', 'Attendance updated successfully.');
+    // }
 
     public function update(Request $request, $id)
-    {
+{
+    $validatedData = $request->validate([
+        'student_id' => 'required|exists:students,id',
+        'course_id' => 'required|exists:courses,id',
+        'date' => 'required|date',
+        'status' => 'required|boolean',
+    ]);
 
-        $request->validate([
+    try {
+        $attendance = Attendance::findOrFail($id);
+        $attendance->update($validatedData);
 
-            'edit_name' => 'required',
-            'edit_email' => 'required',
-            'edit_status' => 'required'
-        ],[
-            'edit_name.required' => 'The name field is required.',
-            'edit_email.required' => 'The email feild is required.',
-            'edit_status.required' => 'The status field is required.'
-        ]);
-
-    $update = Student::where('id', $id)->update([
-    'name' => $request->edit_name,
-    'email' => $request->edit_email,
-    'status' => $request->edit_status
-]);
-    if ($update) {
-        return response()->json(['status' => true, 'message' => 'Student Updated Successfully!'], 200);
+        return response()->json(['status' => true, 'message' => 'Attendance updated successfully!'], 200);
+    } catch (\Exception $e) {
+        return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
     }
-    return response()->json(['status' => false, 'message' => 'Student Updated Failed!']);
-        // return response()->json(['status' => true, 'message' => 'Page was Updated Successfully!'], 200);
-    }
+}
+//     public function update(Request $request, $id)
+//     {
+
+//         $request->validate([
+
+//             'edit_student_id' => 'required',
+//             'edit_course_id' => 'required',
+//             'edit_date' => 'required',
+//             'edit_status' => 'required'
+//         ],[
+//             'edit_student_id.required' => 'The student_id field is required.',
+//             'edit_course_id.required' => 'The course_id feild is required.',
+//             'edit_date.required' => 'The date feild is required.',
+//             'edit_status.required' => 'The status field is required.'
+//         ]);
+
+//     $update = Attendance::where('id', $id)->update([
+//     'student_id' => $request->edit_student_id,
+//     'course_id' => $request->edit_course_id,
+//     'date' => $request->edit_date,
+//     'status' => $request->edit_status
+// ]);
+//     if ($update) {
+//         return response()->json(['status' => true, 'message' => 'Attendance Updated Successfully!'], 200);
+//     }
+//     return response()->json(['status' => false, 'message' => 'attendancce Updated Failed!']);
+//         // return response()->json(['status' => true, 'message' => 'Page was Updated Successfully!'], 200);
+//     }
+
+    // public function destroy($id)
+    // {
+    //     $attendance = Attendance::findOrFail($id);
+    //     $attendance->delete();
+    //     return redirect()->route('attendances.index')->with('success', 'Attendance deleted successfully.');
+    // }
 
     public function delete($id)
     {
 
         if (!empty($id)) {
-            $student = Student::where('id', $id)->first();
-            $student->delete();
-            return response()->json(['status' => 200, 'message' => 'Student Deleted Successfully!'], 200);
+            $attendance = Attendance::where('id', $id)->first();
+            $attendance->delete();
+            return response()->json(['status' => 200, 'message' => 'Course Deleted Successfully!'], 200);
         }
+    }
+
+    public function generateReport(Request $request)
+    {
+        $request->validate([
+            'course_id' => 'required|exists:courses,id',
+        ]);
+
+        $course = Course::findOrFail($request->course_id);
+        $attendances = Attendance::where('course_id', $course->id)->orderBy('date')->get();
+
+        return view('attendance.report', compact('course', 'attendances'));
+    }
+
+    // public function fetchAttendance(Request $request)
+    // {
+    //     $date = $request->date;
+    //     $attendances = Attendance::whereDate('date', $date)->get();
+
+    //     return response()->json(['attendances' => $attendances]);
+    // }
+    public function fetchAttendance(Request $request)
+{
+    $date = $request->date;
+    $attendances = Attendance::whereDate('date', $date)
+        ->with(['student', 'course'])
+        ->get();
+
+    return response()->json(['attendances' => $attendances]);
+}
+    public function report()
+    {
+        $courses = Course::with('attendances')->get();
+        return view('attendances.report', compact('courses'));
+    }
+
+    public function reportByCourse($course_id)
+    {
+        $course = Course::with('attendances.student')->findOrFail($course_id);
+        return view('attendances.report_course', compact('course'));
     }
 }

@@ -477,6 +477,7 @@ Route::middleware(['auth'])->group(function () {
 
     //attendance
     // Route::resource('attendance', 'AttendanceController');
+    //  Route::get('/attendances',[AttendanceController::class,'index']);
     Route::get('/attendances', [AttendanceController::class, 'index'])->name('attendances.index');
     Route::post('/attendances/store', [AttendanceController::class, 'store'])->name('attendances.store');
     Route::get('/attendances/{id}/edit', [AttendanceController::class, 'edit'])->name('attendances.edit');
@@ -486,6 +487,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/attendances/report', [AttendanceController::class, 'report'])->name('attendances.report');
 Route::get('/attendances/report/{course_id}', [AttendanceController::class, 'reportByCourse'])->name('attendances.report.course');
 
+Route::post('/attendances/update-status', [AttendanceController::class, 'updateStatus'])->name('attendances.updateStatus');
+//fetch the data
+Route::get('/attendances/fetchBySeason', [AttendanceController::class, 'fetchBySeason'])->name('attendances.fetchBySeason');
    //CourseStudent
 
    Route::get('course_students', [CourseStudentController::class, 'index'])->name('course_students.index');
@@ -535,8 +539,10 @@ Route::get('/course_students/{student_id}/{course_id}/edit', [CourseStudentContr
     Route::post('attendance/generateReport', [AttendanceController::class, 'generateReport']);
 
     //fetch attendance
-Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
-Route::get('/attendance/fetch', [AttendanceController::class, 'fetchAttendance'])->name('attendance.fetch');
-Route::post('/attendance/store', [AttendanceController::class, 'store'])->name('attendance.store');
+// Route::get('/attendances', [AttendanceController::class, 'index'])->name('attendances.index');
+// Route::get('/attendance/fetch', [AttendanceController::class, 'fetchAttendance'])->name('attendance.fetch');
+// Route::post('/attendance/store', [AttendanceController::class, 'store'])->name('attendance.store');
+
+
 
 });
