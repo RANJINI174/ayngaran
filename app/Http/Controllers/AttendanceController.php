@@ -7,19 +7,39 @@ use App\Models\Course;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+// use Barryvdh\DomPDF\Facade as PDF;
+// use Maatwebsite\Excel\Facades\Excel;
+// use App\Exports\AttendancesExport;
 
 class AttendanceController extends Controller
 {
-    // public function index()
+    // public function index(Request $request)
     // {
-    //     $attendances = Attendance::with('student', 'course')->get();
-    //     $students = Student::all();
+    //     $query = Attendance::query();
+
+    //     // Filter by course_id if provided
+    //     if ($request->has('course_id')) {
+    //         $query->whereHas('student.courses', function ($query) use ($request) {
+    //             $query->where('course_id', $request->course_id);
+    //         });
+    //     }
+
+    //     // Filter by date if provided
+    //     if ($request->has('date')) {
+    //         $query->whereDate('date', $request->date);
+    //     }
+
+    //     // Load the related student and course data
+    //     $attendances = $query->with(['student', 'student.courses'])->get();
+
+    //     // Fetch all courses and students
     //     $courses = Course::all();
+    //     $students = Student::all();
+
     //     return view('attendances.index', compact('attendances', 'students', 'courses'));
     // }
 
-
-//date wise fetch the data
+// course,date wise fetch the data
 
     public function index(Request $request)
     {
@@ -38,6 +58,8 @@ class AttendanceController extends Controller
 
         return view('attendances.index', compact('attendances','students','courses'));
     }
+
+
     //course only correct
 //     public function index(Request $request)
 // {
@@ -132,31 +154,7 @@ public function updateStatus(Request $request)
             return response()->json(['status' => false, 'message' => 'Failed to add attendance!'], 500);
         }
     }
-    // public function store(Request $request)
-    // {
-    //     $validatedData = $request->validate([
-    //         'course_id' => 'required|exists:courses,id',
-    //         'date' => 'required|date',
-    //         'attendance' => 'required|array',
-    //         'attendance.*.student_id' => 'required|exists:students,id',
-    //         'attendance.*.status' => 'required|boolean',
-    //     ]);
 
-    //     foreach ($validatedData['attendance'] as $attendanceData) {
-    //         Attendance::updateOrCreate(
-    //             [
-    //                 'student_id' => $attendanceData['student_id'],
-    //                 'course_id' => $validatedData['course_id'],
-    //                 'date' => $validatedData['date'],
-    //             ],
-    //             [
-    //                 'status' => $attendanceData['status'],
-    //             ]
-    //         );
-    //     }
-
-    //     return redirect()->route('attendance.create')->with('success', 'Attendance recorded successfully.');
-    // }
 
     public function show($id)
     {
@@ -256,12 +254,6 @@ public function updateStatus(Request $request)
 //         // return response()->json(['status' => true, 'message' => 'Page was Updated Successfully!'], 200);
 //     }
 
-    // public function destroy($id)
-    // {
-    //     $attendance = Attendance::findOrFail($id);
-    //     $attendance->delete();
-    //     return redirect()->route('attendances.index')->with('success', 'Attendance deleted successfully.');
-    // }
 
     public function delete($id)
     {
@@ -274,16 +266,42 @@ public function updateStatus(Request $request)
     }
 
     public function generateReport(Request $request)
-    {
-        $request->validate([
-            'course_id' => 'required|exists:courses,id',
-        ]);
+{
+    $attendances = Attendance::query();
+        $students = Student::all();
+        $courses = Course::all();
+        if ($request->has('date')) {
+            $attendances->whereDate('date', $request->date);
+        }
+        if ($request->has('course_id')) {
+                  $attendances->where('course_id', $request->input('course_id'));
+        }
 
-        $course = Course::findOrFail($request->course_id);
-        $attendances = Attendance::where('course_id', $course->id)->orderBy('date')->get();
 
-        return view('attendance.report', compact('course', 'attendances'));
-    }
+        $attendances = $attendances->get();
+        $totalStudents = $attendances->unique('student_id')->count();
+    return view('attendances.report', compact('attendances', 'courses','totalStudents'));
+}
+//     public function generateReport(Request $request)
+// {
+//     $query = Attendance::query();
+
+//     if ($request->has('course_id')) {
+//         $query->whereHas('student.courses', function ($query) use ($request) {
+//             $query->where('course_id', $request->course_id);
+//         });
+//     }
+
+//     if ($request->has('date')) {
+//         $query->whereDate('date', $request->date);
+//     }
+
+//     $attendances = $query->with(['student', 'student.courses'])->get();
+//     $courses = Course::all();
+
+//     return view('attendances.report', compact('attendances', 'courses'));
+// }
+
 
     // public function fetchAttendance(Request $request)
     // {
@@ -301,15 +319,40 @@ public function updateStatus(Request $request)
 
     return response()->json(['attendances' => $attendances]);
 }
-    public function report()
-    {
-        $courses = Course::with('attendances')->get();
-        return view('attendances.report', compact('courses'));
-    }
+    // public function report()
+    // {
+    //     $courses = Course::with('attendances')->get();
+    //     return view('attendances.report', compact('courses'));
+    // }
 
     public function reportByCourse($course_id)
     {
         $course = Course::with('attendances.student')->findOrFail($course_id);
         return view('attendances.report_course', compact('course'));
     }
+
+//     public function exportPdf(Request $request)
+// {
+//     $query = Attendance::query();
+
+//     if ($request->has('course_id')) {
+//         $query->whereHas('student.courses', function ($query) use ($request) {
+//             $query->where('course_id', $request->course_id);
+//         });
+//     }
+
+//     if ($request->has('date')) {
+//         $query->whereDate('date', $request->date);
+//     }
+
+//     $attendances = $query->with(['student', 'student.courses'])->get();
+//     $pdf = PDF::loadView('attendances.pdf', compact('attendances'));
+
+//     return $pdf->download('attendance_report.pdf');
+// }
+
+// public function exportExcel(Request $request)
+// {
+//     return Excel::download(new AttendancesExport($request), 'attendance_report.xlsx');
+// }
 }

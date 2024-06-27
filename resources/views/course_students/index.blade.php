@@ -152,7 +152,20 @@
                                         <tr class="border-bottom">
                                             <td class="text-muted fs-12 fw-semibold text-center">{{ $i++ }}
                                             </td>
-                                            <td>{{ $course_student->student->name }}</td>
+                                            {{-- <td>{{ $course_student->student->name }}</td> --}}
+                                            <td>
+                                                {{-- @foreach($course_students as $course_students)
+                                                @if ($course_students->student_id == $students->id) {{ $student->name }}
+
+                                               @endif
+                                           @endforeach --}}
+                                           @foreach($students as $student)
+                                           @if ($student->id == $course_student->student_id)
+                                               {{ $student->name }}
+                                           @endif
+                                       @endforeach
+                                             </td>
+
                                             <td>{{ $course_student->course->title }}</td>
 
                                             {{-- @if ($val->status == 1)

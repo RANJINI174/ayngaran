@@ -140,32 +140,8 @@
 
                 </div>
                 <div class="card-body">
-
-
-                    {{-- <form action="{{ route('attendances.index') }}" method="GET">
-                        <div class="form-group">
-                            <label for="filter_date">Filter by Date:</label>
-                            <input type="date" id="filter_date" name="date" class="form-control" value="{{ request('date') }}">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Filter</button>
-                    </form> --}}
-
-                    {{-- coursewise --}}
-                    {{-- <form action="{{ route('attendances.index') }}" method="GET" class="mb-4">
-                        <div class="form-group">
-                            <label>Filter by Course:</label>
-                            <div>
-                                @foreach($courses as $course)
-                                    <label class="me-3">
-                                        <input type="radio" name="course_id" value="{{ $course->id }}" {{ request('course_id') == $course->id ? 'checked' : '' }}>
-                                        {{ $course->title }}
-                                    </label>
-                                @endforeach
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Filter</button>
-                    </form> --}}
-                    <form action="{{ route('attendances.index') }}" method="GET">
+                    {{-- <form action="{{ route('attendances.index') }}" method="GET"> --}}
+                        <form action="{{ route('attendances.report') }}" method="GET">
                         <div class="form-group">
                             <label for="course_id">Select Course</label>
                             <select name="course_id" id="course_id" class="form-control" required>
@@ -183,7 +159,8 @@
                             <input type="date" name="date" id="date" class="form-control" value="{{ request('date') }}" required>
                         </div>
 
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        {{-- <button type="submit" class="btn btn-primary">Submit</button> --}}
+                        <button type="submit" class="btn btn-primary">Generate Report</button>
                     </form>
 
                     <div class="table-responsive">
@@ -269,13 +246,33 @@
                     </div>
                 </div>
             </div>
-            
+            {{-- <button type="submit" class="btn btn-primary">Generate Report</button> --}}
         </div><!-- COL END -->
     </div><!-- ROW-5 END -->
 @endsection
 
 @section('scripts')
 <script>
+
+$(document).ready(function() {
+    $('#generateReportButton').on('click', function() {
+        var courseId = $('#course_id').val();
+        var date = $('#date').val();
+
+        $.ajax({
+            url: '{{ route("attendances.report") }}',
+            method: 'GET',
+            data: { course_id: courseId, date: date },
+            success: function(response) {
+                $('#reportContainer').html(response);
+            },
+            error: function(xhr, status, error) {
+                console.error(error);
+            }
+        });
+    });
+});
+
 $(document).ready(function() {
     $('input[type=radio][name^=status_]').change(function() {
         var attendanceId = $(this).attr('name').split('_')[1];

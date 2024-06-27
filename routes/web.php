@@ -484,9 +484,9 @@ Route::middleware(['auth'])->group(function () {
     Route::put('attendances/{id}', [AttendanceController::class, 'update'])->name('attendances.update');
     Route::delete('/attendances/{id}/delete', [AttendanceController::class, 'delete'])->name('attendances.destroy');
 
-    Route::get('/attendances/report', [AttendanceController::class, 'report'])->name('attendances.report');
+    // Route::get('/attendances/report', [AttendanceController::class, 'report'])->name('attendances.report');
 Route::get('/attendances/report/{course_id}', [AttendanceController::class, 'reportByCourse'])->name('attendances.report.course');
-
+// Route::get('/attendances/report', [AttendanceController::class, 'generateReport'])->name('attendances.report');
 Route::post('/attendances/update-status', [AttendanceController::class, 'updateStatus'])->name('attendances.updateStatus');
 //fetch the data
 Route::get('/attendances/fetchBySeason', [AttendanceController::class, 'fetchBySeason'])->name('attendances.fetchBySeason');
@@ -538,11 +538,9 @@ Route::get('/course_students/{student_id}/{course_id}/edit', [CourseStudentContr
     Route::get('courses/{course_id}/attendance', [CoursesController::class, 'attendanceReport']);
     Route::post('attendance/generateReport', [AttendanceController::class, 'generateReport']);
 
-    //fetch attendance
-// Route::get('/attendances', [AttendanceController::class, 'index'])->name('attendances.index');
-// Route::get('/attendance/fetch', [AttendanceController::class, 'fetchAttendance'])->name('attendance.fetch');
-// Route::post('/attendance/store', [AttendanceController::class, 'store'])->name('attendance.store');
+    Route::get('/attendances', [AttendanceController::class, 'index'])->name('attendances.index');
+    Route::get('/attendances/report', [AttendanceController::class, 'report'])->name('attendances.report');
 
-
+    Route::get('/attendances/report', [AttendanceController::class, 'generateReport'])->name('attendances.report');
 
 });
